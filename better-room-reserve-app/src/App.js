@@ -4,8 +4,8 @@ import logo from "./logo.svg";
 
 class App extends Component {
   componentDidMount() {
-    fetch("localhost:3000")
-      .then((response) => response.json())
+    fetch("localhost:3000/get_data")
+      .then((response) => response.body)
       .then((data) => console.log(data))
       .catch((error) => console.error(error));
   }
