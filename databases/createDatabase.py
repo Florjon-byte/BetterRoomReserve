@@ -43,24 +43,30 @@ cur.execute('''
             reservations UUID[] DEFAULT ARRAY[]::UUID[]);
             ''')
 
-cur.execute('''
-            CREATE TABLE IF NOT EXISTS reservations
-            (reservation_id UUID NOT NULL PRIMARY KEY,
-            date DATE,
-            start_time TIME,
-            end_time TIME,
-            room_id VARCHAR(256),
-            user_id VARCHAR(256),
+# cur.execute("drop table reservations")
 
-            FOREIGN KEY (room_id) REFERENCES rooms(room_id),
-            FOREIGN KEY (user_id) REFERENCES user_info(net_id));
-            ''')
+# cur.execute('''
+#             CREATE TABLE IF NOT EXISTS reservations
+#             (reservation_id SERIAL PRIMARY KEY,
+#             date DATE,
+#             start_time TIME,
+#             end_time TIME,
+#             room_id VARCHAR(256),
+#             user_id VARCHAR(256),
+
+#             FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+#             FOREIGN KEY (user_id) REFERENCES user_info(net_id));
+#             ''')
 
 
+# cur.execute("drop table rooms")
 
-# f = open("Rooms.csv", 'r')
-# cur.copy_from(f, 'rooms', columns=('room_id', 'max_occupancy','location'), sep=",")
-# f.close()
+f = open("Rooms.csv", 'r')
+for row in f:
+  cutRow = row.split(",")
+  room_id, max_occupancy, location = cutRow
+  cur.execute("INSERT INTO rooms (room_id, max_occupancy, location) VALUES (%s, %s, %s)",(room_id, max_occupancy, location))
+f.close()
 
 # cur.execute("insert into user_info values ('dg3314', '090118', true);")
 # cur.execute("insert into user_info values ('fh999', '123456', true);")
@@ -73,7 +79,7 @@ cur.execute('''
 # conn.commit()
 
 # sample get request to prove we did the work
-cur.execute("insert into reservations values (uuid,'2023-10-25', '160000-0500','170000-0500','LC420','dg3314')")
+# cur.execute("insert into reservations values (uuid,'2023-10-25', '160000-0500','170000-0500','LC420','dg3314')")
 cur.execute("select * from reservations")
 
 # print your information

@@ -34,7 +34,7 @@ class RootController(TGController):
 
     @expose('json')
     def profile(self, user_id=None):
-        return "This will be the profile page for "+user_id
+        return "This will be the profile page for "+user_id+" and it will display information with regards to their account and bookings, there will be an authorization check that needs to happen in order to view the data."
 
     @expose('json')
     def reserve(self, user_id=None):
