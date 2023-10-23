@@ -10,7 +10,9 @@ Our application called BetterRoomReserve
 
 > activate the virtualenv
 
-`. brr/bin/activate`
+`. brr/bin/activate` for mac 
+
+`. brr/Scripts/activate` for windows 
 
 > install the libraries
 
