@@ -1,0 +1,11 @@
+Database:
+  - flesh out the database more in light of discovery that the hackathon database isn't enough
+  - work out predictions and surveys functionality
+  - known error: reservations not being created due to data mismatch
+
+Backend:
+  - create more routes
+  - find a way to read the body data of a given page
+  - implement an authorization system, ties to login
+
+Frontend:
