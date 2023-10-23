@@ -2,6 +2,29 @@
   text-align: center;
 }
 
+.leftside, .rightside{
+  height: 100vh;
+  width: 100%;  
+}
+
+.leftside{
+  display: grid;
+  align-items: stretch;
+}
+
+.dibner-image{
+  display: flex; 
+  flex: 1; 
+  padding: 20px; 
+  flex-direction: column;
+  align-items: baseline;
+}
+
+.front{
+  height: 15vmin;
+  width: fit-content;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

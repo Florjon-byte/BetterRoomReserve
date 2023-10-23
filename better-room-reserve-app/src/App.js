@@ -1,4 +1,5 @@
 import logo from './images/bern-dibner-library.jpg';
+import front from "./images/front-dibner.jpg"
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -28,7 +29,24 @@ function App() {
           </button>
         </div>
       </nav>
-      <img class="img-fluid rounded custom-image" src={logo}></img>
+      <div class="row">
+        <div className="col dibner-image ">
+          {/* Left Side  */}
+          <div class="leftside">
+            <img class="img-fluid rounded float-start" src={logo}></img>
+            {/* <img className="front img-fluid rounded" src={front}></img> */}
+          </div>
+        </div>
+        <div className="col">
+          {/* Right Side  */}
+          <div class="rightside">
+            <div class="d-grid gap-2 col-6 mx-auto">
+              <button class="btn btn-primary" type="button">Button</button>
+              <button class="btn btn-primary" type="button">Button</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
