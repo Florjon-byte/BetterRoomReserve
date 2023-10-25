@@ -44,7 +44,6 @@ class RootController(TGController):
 
         # query = "select * from reservations where user_id=%s"
         # cur.execute(query,(user_id))
-        cur.execute()
         data = { "result": cur.fetchall() }
         return data
     
