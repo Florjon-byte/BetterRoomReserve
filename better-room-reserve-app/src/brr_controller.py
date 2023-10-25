@@ -14,8 +14,8 @@ conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
 cur = conn.cursor()
 
 def createReservation(date,start,end,room_id,user_id):
-    query = "insert into reservations values ("+date+","+start+","+end+","+room_id+","+user_id+")"
-    cur.execute(query)
+    query = "insert into reservations (date,start_time,end_time,room_id,user_id) values (%s,%s,%s,%s,%s)"
+    cur.execute(query,(date,start,end,room_id,user_id))
 
 class RootController(TGController):
     @expose()
@@ -25,14 +25,14 @@ class RootController(TGController):
 
     @expose('json')
     def sample_db_query(self):
-        query = "select * from user_info"
+        query = "select user_id from user_info"
         cur.execute(query)
         data = { 
                 "result": cur.fetchall()
                 }
         return data
 
-    @expose('json')
+    @expose()
     def profile(self, user_id=None):
         return "This will be the profile page for "+user_id+" and it will display information with regards to their account and bookings, there will be an authorization check that needs to happen in order to view the data."
 
@@ -40,8 +40,11 @@ class RootController(TGController):
     def reserve(self, user_id=None):
         createReservation("2023-10-25","160000-0500","170000-0500",'LC420',user_id)
 
-        query = "select * from reservations where user_id="+user_id
-        cur.execute(query)
+        print(type(user_id))
+
+        # query = "select * from reservations where user_id=%s"
+        # cur.execute(query,(user_id))
+        cur.execute()
         data = { "result": cur.fetchall() }
         return data
     
