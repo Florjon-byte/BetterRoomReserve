@@ -17,6 +17,7 @@
 
 .section .img{
   border-radius: 10px; 
+  padding: 20px;
 }
 
 .sections .purposetext{
@@ -31,10 +32,16 @@
 
 .second{
   display: flex;
-  justify-content: space-between; 
+  justify-content: center; 
   align-items: center;
 }
 
+.second .purposetexttwo{
+  max-width: 900px;
+  text-align: left;
+  font-size: 1rem;
+  padding: 1rem;
+}
 
 .leftside{
   display: grid;
