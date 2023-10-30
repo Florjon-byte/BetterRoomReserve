@@ -58,7 +58,7 @@ class App extends Component {
             <p> 
             Group study rooms are a popular service. To help this work well for all students, please adhere to the following policies:
             </p>
-            <ul></ul>
+            <ul className='list'>
               <li> 
                 Do not eat full meals or messy foods in the study rooms. If you don’t comply, you will be asked to leave.
               </li>
@@ -77,8 +77,22 @@ class App extends Component {
               <li>
               There is a 15 minute grace period for reservations. Reservations will be canceled if a group is more than 15 minutes late.
               </li>
+            </ul>
           </div>
         </div>
+        {/* Better Room Reserve stuff  */}
+        <div className='instruction'> 
+          <div className=''>
+          <h1 className='header'> Instructions </h1>
+          <p>
+            Amidst the tranquil rustling of leaves in the ancient forest, a solitary fox ventured cautiously along a winding woodland path. The dappled sunlight filtered through the dense canopy, casting intricate patterns of light and shadow upon the moss-covered ground. With a delicate grace, the fox paused, its keen senses alert to the forest's secrets. Nature's symphony played on, as birdsong blended with the distant babbling of a hidden brook, creating a mesmerizing, harmonious tapestry of sounds. In this enchanted realm, time seemed to stand still, and the fox, a silent sentinel, moved with the rhythm of the woods, a fleeting embodiment of the wild's enduring beauty.
+          </p>
+          </div> 
+          <div>
+            <iframe width="500" height="300" src="https://www.youtube.com/embed/EE-xtCF3T94" title="Who&#39;s That Pokemon?" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+        </div>
+
         {/* Footer */}
         <div> 
         </div>

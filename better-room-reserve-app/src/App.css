@@ -43,6 +43,22 @@
   padding: 1rem;
 }
 
+.list{ 
+  list-style-type: circle;
+}
+
+.list li{
+  margin: 20px;  
+}
+
+.instruction{
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  align-items: center;
+  margin: 3em;
+}
+
 .leftside{
   display: grid;
   align-items: stretch;
