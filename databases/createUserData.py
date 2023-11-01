@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
@@ -11,8 +12,8 @@ cur = conn.cursor()
 query = '''
         CREATE TABLE IF NOT EXISTS user_data 
         (net_id VARCHAR(256) NOT NULL PRIMARY KEY,
-        email VARCHAR(256),
-        password VARCHAR(256),
+        email VARCHAR(256) NOT NULL,
+        password VARCHAR(256) NOT NULL,
         individual_time INT DEFAULT 2,
         group_time INT DEFAULT 2,
         reservations UUID[] DEFAULT ARRAY[]::UUID[]);'''

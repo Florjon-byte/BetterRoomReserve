@@ -10,12 +10,13 @@ cur = conn.cursor()
 
 query = '''
         CREATE TABLE IF NOT EXISTS survey 
-        (survey_id VARCHAR(256) NOT NULL PRIMARY KEY,
-        res_room_id VARCHAR(256) REFERENCES room(room_id),
-        res_reservation_id VARCHAR(256) REFERENCES reservation(reservation_id),
+        (survey_id BIGSERIAL NOT NULL PRIMARY KEY,
+        room_id VARCHAR(256) REFERENCES room(room_id),
+        reservation_id BIGSERIAL REFERENCES reservation(reservation_id),
         noise_level INT,
-        working_outlets INT,
-        working_monitor BOOL DEFAULT NULL);'''
+        working_outlets BOOL DEFAULT NULL,
+        working_monitor BOOL DEFAULT NULL,
+        whiteboards VARCHAR(256));'''
 
 cur.execute(query)
 

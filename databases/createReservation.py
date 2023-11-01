@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
@@ -10,13 +11,13 @@ cur = conn.cursor()
 
 query = '''
         CREATE TABLE IF NOT EXISTS reservation 
-        (reservation_id VARCHAR(256) NOT NULL PRIMARY KEY,
-        date DATE,
-        start_time TIME,
-        end_time TIME,
-        floor VARCHAR(256),
-        res_room_id VARCHAR(256) REFERENCES room(room_id),
-        res_net_id VARCHAR(256) REFERENCES user_data(net_id),
+        (reservation_id BIGSERIAL NOT NULL PRIMARY KEY,
+        date DATE NOT NULL ,
+        start_time TIME NOT NULL,
+        end_time TIME NOT NULL,
+        floor VARCHAR(256) NOT NULL,
+        room_id VARCHAR(256) REFERENCES room(room_id),
+        net_id VARCHAR(256) REFERENCES user_data(net_id),
         availability BOOL DEFAULT FALSE);'''
 
 cur.execute(query)

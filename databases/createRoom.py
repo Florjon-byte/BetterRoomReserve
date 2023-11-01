@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
@@ -11,11 +12,12 @@ cur = conn.cursor()
 query = '''
         CREATE TABLE IF NOT EXISTS room 
         (room_id VARCHAR(256) NOT NULL PRIMARY KEY,
-        max_occupancy INT,
-        building VARCHAR(256),
-        floor VARCHAR(256),
-        outlets INT,
-        monitor BOOL,
+        max_occupancy INT NOT NULL,
+        building VARCHAR(256) NOT NULL,
+        floor VARCHAR(3) NOT NULL,
+        outlets BOOL NOT NULL,
+        monitor BOOL NOT NULL,
+        whiteboard BOOL NOT NULL,
         reservations UUID[] DEFAULT ARRAY[]::UUID[]);'''
 
 cur.execute(query)

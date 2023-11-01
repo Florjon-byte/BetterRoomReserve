@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from tg import expose, TGController, request, response
 from tg import MinimalApplicationConfigurator
 from wsgiref.simple_server import make_server
