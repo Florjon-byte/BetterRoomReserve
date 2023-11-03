@@ -6,7 +6,7 @@ Our application called BetterRoomReserve
 
 > create a virtualenv using python virtualenv
 
-`virtualenv brr`
+`venv brr`
 
 > activate the virtualenv
 
