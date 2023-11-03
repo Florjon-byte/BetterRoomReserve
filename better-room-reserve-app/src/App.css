@@ -2,6 +2,81 @@
   text-align: center;
 }
 
+.leftside, .rightside{
+  height: 100vh;
+  width: 100%;  
+}
+
+.sections{
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row-reverse;
+  align-items: center;
+  margin: 3em;
+}
+
+.section .img{
+  border-radius: 10px; 
+  padding: 20px;
+}
+
+.sections .purposetext{
+  max-width: 900px;
+  text-align: left;
+  font-size: 1rem;
+  padding: 1rem;
+}
+.section .purposetext .header{ 
+  font-weight: bold;
+}
+
+.second{
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+}
+
+.second .purposetexttwo{
+  max-width: 900px;
+  text-align: left;
+  font-size: 1rem;
+  padding: 1rem;
+}
+
+.list{ 
+  list-style-type: circle;
+}
+
+.list li{
+  margin: 20px;  
+}
+
+.instruction{
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  align-items: center;
+  margin: 3em;
+}
+
+.leftside{
+  display: grid;
+  align-items: stretch;
+}
+
+.dibner-image{
+  display: flex; 
+  flex: 1; 
+  padding: 20px; 
+  flex-direction: column;
+  align-items: baseline;
+}
+
+.front{
+  height: 15vmin;
+  width: fit-content;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
