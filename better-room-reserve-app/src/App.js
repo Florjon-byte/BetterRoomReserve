@@ -1,20 +1,72 @@
 import logo from './images/bern-dibner-library.jpg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import React, { Component } from "react"
+import React, { Component, useEffect, useState } from "react"
+import axios from "axios"
+
+// test fetch and get 
+export function Test(){
+  const [test, setTest] = useState([])
+  const fetchTest = async() => {
+    const response = await fetch("https://localhost:8000/")
+    const test = await response.json() 
+    setTest(test.data)
+  }
+
+  useEffect(() => {
+    fetchTest()
+  }, [])
+
+  return (test)
+}
 
 class App extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      // maybe for the future use loading 
+      data: {} 
+    }
+  }
+
+  // async test(){
+  //   const response = await fetch("http://localhost:8000/api")
+
+  //   return response
+  //     .json() 
+  //     .then((data) => console.log(data))
+  //     .catch((error) => console.error(error));
+  // }
+
+  async test() {
+    try {
+      const response = await fetch("http://localhost:8000/api");
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // async test(){
+  //   const response = await axios.get("http://localhost:8000/api",
+  //   {
+  //     mode: 'no-cors'
+  //   });
+  //   this.setState({
+  //     data: response.data
+  //   })
+  //   console.log(this.state.data)
+  // }
 
   componentDidMount() {
-    fetch("localhost:3000")
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error(error));
+    this.test()
   }
 
   render(){
     return (
       <div>
+        {this.componentDidMount}
         {/* Navbar */}
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
           <div class="container-fluid">
