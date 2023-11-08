@@ -48,25 +48,11 @@ class App extends Component {
     }
   }
 
-  // async test(){
-  //   const response = await axios.get("http://localhost:8000/api",
-  //   {
-  //     mode: 'no-cors'
-  //   });
-  //   this.setState({
-  //     data: response.data
-  //   })
-  //   console.log(this.state.data)
-  // }
-
-  componentDidMount() {
-    this.test()
-  }
+  componentDidMount() {}
 
   render(){
     return (
       <div>
-        {this.componentDidMount}
         {/* Navbar */}
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
           <div class="container-fluid">
@@ -103,6 +89,11 @@ class App extends Component {
           </div>
         </div>
 
+        <div className='button-group'>
+          <button className='nyubutton'>Reserve an Individual Room</button>
+          <button className='nyubutton'>Reserve a Large Room</button>
+        </div>
+
         {/* Second Div */}
         <div className='second'>
           <div className='purposetexttwo'>
@@ -132,6 +123,7 @@ class App extends Component {
             </ul>
           </div>
         </div>
+
         {/* Better Room Reserve stuff  */}
         <div className='instruction'> 
           <div className=''>
@@ -146,8 +138,11 @@ class App extends Component {
         </div>
 
         {/* Footer */}
-        <div> 
-        </div>
+        <footer className="bg-dark text-center text-white"> 
+          <div className="footer-text">
+            © 2023 Copyright: BetterRoomReserve 
+          </div>
+        </footer>
       </div>
     );
   }
