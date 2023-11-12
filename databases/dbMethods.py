@@ -18,27 +18,30 @@ def commitAndClose(cur, conn):
 
 def createUser(net_id, email, password):
   cur, conn = openCursor()
-  cur.execute("CREATE EXTENSION pgcrypto;")
+  try:
+    cur.execute("CREATE EXTENSION pgcrypto;")
+  except(psycopg2.errors.DuplicateObject):
+    pass
   query = '''
           INSERT INTO user_data 
           (net_id, email, password)
           VALUES
-          (%s, %s, crypt(%s,gen_salt("md5")))
+          (%s, %s, %s)
           '''
   cur.execute(query,(net_id, email, password))
   cur.execute("select * from user_data")
   print(cur.fetchall())
   commitAndClose(cur,conn)
 
-def createRoom(room_id, max_occupancy, building, floor, outlets, monitor):
+def createRoom(room_id, max_occupancy, building, floor, outlets, monitor, whiteboard):
   cur, conn = openCursor();
   query = '''
           INSERT INTO room
-          (room_id, max_occupancy, building, floor, outlets, monitor)
+          (room_id, max_occupancy, building, floor, outlets, monitor, whiteboard)
           VALUES
-          (%s,%s,%s,%s,%s,%s)
+          (%s,%s,%s,%s,%s,%s,%s)
           '''
-  cur.execute(query,(room_id, max_occupancy, building, floor, outlets, monitor))
+  cur.execute(query,(room_id, max_occupancy, building, floor, outlets, monitor, whiteboard))
   cur.execute("select * from room")
   print(cur.fetchall())
   commitAndClose(cur,conn)
@@ -68,19 +71,3 @@ def createSurvey(room_id, reservation_id, noise_level, working_outlets, working_
   cur.execute("select * from survey")
   print(cur.fetchall())
   commitAndClose(cur,conn)
-
-
-# Test user_data
-# createUser("dg3314","dg3314@nyu.edu","notAPassword")
-# createUser("fh999", "fh999@nyu.edu","definitelyNotAPassword")
-
-# Test room
-with open("Rooms.csv") as file:
-  for row in file:
-    formattedRow = row.strip().split(',')
-    room_id = 
-    max_occupancy = 
-    building = 
-    floor = 
-    outlets = 
-    createRoom

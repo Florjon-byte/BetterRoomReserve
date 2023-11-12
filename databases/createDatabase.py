@@ -10,7 +10,10 @@ conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
 cur = conn.cursor()
 
 # drop brr database
-cur.execute("drop database betterroomreserve")
+try:
+  cur.execute("drop database betterroomreserve")
+except(psycopg2.errors.InvalidCatalogName):
+  pass
 
 # create brr database
 try:
