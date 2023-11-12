@@ -1,16 +1,27 @@
 import logo from './images/bern-dibner-library.jpg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import React, { Component } from "react"
+import React, { Component, useEffect, useState, Route } from "react"
+import { useNavigate } from 'react-router-dom'
+import axios from "axios"
 
 class App extends Component {
-
-  componentDidMount() {
-    fetch("localhost:3000")
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error(error));
+  constructor(props){
+    super(props)
   }
+
+
+  async test() {
+    try {
+      const response = await fetch("http://localhost:8000/api");
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  componentDidMount() {}
 
   render(){
     return (
@@ -51,6 +62,11 @@ class App extends Component {
           </div>
         </div>
 
+        <div className='button-group'>
+          <button className='nyubutton'>Reserve an Individual Room</button>
+          <button className='nyubutton'>Reserve a Large Room</button>
+        </div>
+
         {/* Second Div */}
         <div className='second'>
           <div className='purposetexttwo'>
@@ -80,6 +96,7 @@ class App extends Component {
             </ul>
           </div>
         </div>
+
         {/* Better Room Reserve stuff  */}
         <div className='instruction'> 
           <div className=''>
@@ -94,8 +111,11 @@ class App extends Component {
         </div>
 
         {/* Footer */}
-        <div> 
-        </div>
+        <footer className="bg-dark text-center text-white"> 
+          <div className="footer-text">
+            © 2023 Copyright: BetterRoomReserve 
+          </div>
+        </footer>
       </div>
     );
   }
