@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-from wsgiref.simple_server import make_server
 import sys
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
