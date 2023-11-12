@@ -6,12 +6,12 @@ from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import dbMethods as db
 
 origins = [
     "http://localhost:3000"
 ]
 sys.path.append("../../databases")
-import dbMethods as db
 
 LOCAL_URL = "http://localhost:8000/"
 
@@ -31,11 +31,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app = FastAPI()
+
 @app.get("/api")
 def read_root():
     return {"Hello": "World"}
-app = FastAPI()
-
 
 @app.get("/home")
 def post_test_data():

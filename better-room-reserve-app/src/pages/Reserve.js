@@ -3,14 +3,9 @@ import React, { Component, useEffect, useState, Route } from "react"
 import { useNavigate } from 'react-router-dom'
 import axios from "axios"
 
-class Reserve extends Component{
-    constructor(props){
-        super(props)
-    }
+export function Reserve(){
 
-    render(){
-        <div>
-            Hello world 
-        </div>
-    }
+    return (
+        <div> Hello Welcome to Reserve Page</div>
+    )
 }
