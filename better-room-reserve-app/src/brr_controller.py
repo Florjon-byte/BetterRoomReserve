@@ -1,64 +1,38 @@
 #!/usr/bin/python3
-from tg import expose, TGController, request, response
-from tg import MinimalApplicationConfigurator
-from wsgiref.simple_server import make_server
+import sys
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from typing import Union
+from fastapi import FastAPI
+sys.path.append("../../databases")
+import dbMethods as db
 
-LOCAL_URL = "http://localhost:8080/"
+LOCAL_URL = "http://localhost:8000/"
 
-# Connect to your postgres DB
-conn = psycopg2.connect("dbname=betterroomreserve user=postgres")
-conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
-
-# Open a cursor to perform database operations
-cur = conn.cursor()
-
-def createReservation(date,start,end,room_id,user_id):
-    query = "insert into reservations (date,start_time,end_time,room_id,user_id) values (%s,%s,%s,%s,%s)"
-    cur.execute(query,(date,start,end,room_id,user_id))
-
-class RootController(TGController):
-    @expose()
-    def index(self):
-        return 'Hello World'
+app = FastAPI()
 
 
-    @expose('json')
-    def sample_db_query(self):
-        query = "select user_id from user_info"
-        cur.execute(query)
-        data = { 
-                "result": cur.fetchall()
-                }
-        return data
+@app.get("/home")
+def post_test_data():
+    cur, conn = db.openCursor()
+    query = "SELECT * FROM user_data WHERE net_id = 'dg3314'"
+    cur.execute(query)
+    results = cur.fetchall()
+    db.commitAndClose(cur, conn)
+    return results
 
-    @expose()
-    def profile(self, user_id=None):
-        return "This will be the profile page for "+user_id+" and it will display information with regards to their account and bookings, there will be an authorization check that needs to happen in order to view the data."
+@app.get("/reserve")
+def read_root():
+    return {"Hello": "World"}
 
-    @expose('json')
-    def reserve(self, user_id=None):
-        createReservation("2023-10-25","160000-0500","170000-0500",'LC420',user_id)
+@app.get("/profile")
+def read_root():
+    return {"Hello": "World"}
 
-        print(type(user_id))
+@app.get("/login")
+def authenticate_user():
+    return {"Hello": "World"}
 
-        # query = "select * from reservations where user_id=%s"
-        # cur.execute(query,(user_id))
-        data = { "result": cur.fetchall() }
-        return data
-    
-
-
-
-
-config = MinimalApplicationConfigurator()
-config.update_blueprint({
-    'root_controller': RootController()
-})
-
-application = config.make_wsgi_app()
-
-print("Serving on port 8080...")
-httpd = make_server('', 8080, application)
-httpd.serve_forever()
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: Union[str, None] = None):
+    return {"item_id": item_id, "q": q}
