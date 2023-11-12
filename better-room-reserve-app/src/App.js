@@ -10,7 +10,6 @@ class App extends Component {
     super(props)
   }
 
-  
 
   async test() {
     try {
