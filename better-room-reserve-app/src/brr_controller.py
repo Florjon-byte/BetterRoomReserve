@@ -6,17 +6,13 @@ from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-import dbMethods as db
+
 
 origins = [
     "http://localhost:3000"
 ]
 sys.path.append("../../databases")
-
-LOCAL_URL = "http://localhost:8000/"
-
-class Data(BaseModel):
-    hello_world: str
+import dbMethods as db
 
 # Connect to your postgres DB
 conn = psycopg2.connect("dbname=betterroomreserve user=postgres")
@@ -58,6 +54,3 @@ def read_root():
 def authenticate_user():
     return {"Hello": "World"}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
