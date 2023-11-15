@@ -4,7 +4,7 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from typing import Union
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -13,6 +13,38 @@ origins = [
 ]
 sys.path.append("../../databases")
 import dbMethods as db
+
+class UserModel(BaseModel):
+    net_id: str
+    email: EmailStr
+    password: str
+    individual_time: int
+    group_time: int
+    reservations: 
+
+class Room(BaseModel):
+    room_id: str
+    max_occupancy: int
+    building: str
+    floor: str
+    outlets: bool
+    monitor: 
+    whiteboard: 
+    reservations: 
+
+class Reservation(BaseModel):
+    net_id: str
+    email: str
+    individual_time: int
+    group_time: int
+    reservations: int
+
+class Survey(BaseModel):
+    net_id: str
+    email: str
+    individual_time: int
+    group_time: int
+    reservations: int
 
 # Connect to your postgres DB
 conn = psycopg2.connect("dbname=betterroomreserve user=postgres")
@@ -33,24 +65,28 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-@app.get("/home")
-def post_test_data():
-    cur, conn = db.openCursor()
-    query = "SELECT * FROM user_data WHERE net_id = 'dg3314'"
-    cur.execute(query)
-    results = cur.fetchall()
-    db.commitAndClose(cur, conn)
-    return results
-
 @app.get("/reserve")
-def read_root():
+async def get_room_reservation():
+#    response = await 
+    pass
+
+def reserve_room():
     return {"Hello": "World"}
 
 @app.get("/profile")
 def read_root():
     return {"Hello": "World"}
 
+def cancel_reservation():
+    return {"hello": "world"}
+
 @app.get("/login")
 def authenticate_user():
     return {"Hello": "World"}
 
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: Union[str, None] = None):
+    return {"item_id": item_id, "q": q}
+
+def get_room_info(room_id):
+    pass

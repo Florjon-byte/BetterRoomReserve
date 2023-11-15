@@ -1,0 +1,1 @@
+uvicorn ./better-room-reserve-app/src/brr_controller:app --reload
