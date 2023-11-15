@@ -7,13 +7,12 @@ from fastapi import FastAPI
 from pydantic import BaseModel, EmailStr
 from fastapi.middleware.cors import CORSMiddleware
 
+
 origins = [
     "http://localhost:3000"
 ]
 sys.path.append("../../databases")
 import dbMethods as db
-
-LOCAL_URL = "http://localhost:8000/"
 
 class UserModel(BaseModel):
     net_id: str
@@ -59,6 +58,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app = FastAPI()
 
 @app.get("/api")
 def read_root():
