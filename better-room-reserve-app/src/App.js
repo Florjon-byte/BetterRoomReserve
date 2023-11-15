@@ -8,7 +8,6 @@ import { LoginPage } from "./pages/LoginPage"
 import { Home } from "./pages/HomePage"
 
 const App = () => {
-
     return (
       <Router> 
             <Routes> 
