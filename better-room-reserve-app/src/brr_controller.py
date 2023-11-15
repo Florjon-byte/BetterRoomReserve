@@ -2,7 +2,7 @@
 import sys
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from typing import Union
+from typing import Union, List
 from fastapi import FastAPI
 from pydantic import BaseModel, EmailStr
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,7 +20,7 @@ class UserModel(BaseModel):
     password: str
     individual_time: int
     group_time: int
-    reservations: 
+    reservations: list[str]
 
 class Room(BaseModel):
     room_id: str
@@ -28,23 +28,29 @@ class Room(BaseModel):
     building: str
     floor: str
     outlets: bool
-    monitor: 
-    whiteboard: 
-    reservations: 
+    monitor: bool
+    whiteboard: bool
+    reservations: list[str] = []
 
 class Reservation(BaseModel):
+    reservation_id: int
+    date: str
+    start_time: str
+    end_time: str
+    floor: str
+    room_id: str
     net_id: str
-    email: str
-    individual_time: int
-    group_time: int
-    reservations: int
+    availability: bool
 
 class Survey(BaseModel):
-    net_id: str
-    email: str
-    individual_time: int
-    group_time: int
-    reservations: int
+    survey_id: int
+    user_id: str
+    room_id: str
+    reservation_id: int
+    noise_level: int
+    working_outlets: bool
+    working_monitor: bool
+    whiteboards: str
 
 # Connect to your postgres DB
 conn = psycopg2.connect("dbname=betterroomreserve user=postgres")
