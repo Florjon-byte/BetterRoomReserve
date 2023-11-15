@@ -11,6 +11,7 @@ cur = conn.cursor()
 query = '''
         CREATE TABLE IF NOT EXISTS survey 
         (survey_id BIGSERIAL NOT NULL PRIMARY KEY,
+        user_id VARCHAR(256) REFERENCES user_data(net_id),
         room_id VARCHAR(256) REFERENCES room(room_id),
         reservation_id BIGSERIAL REFERENCES reservation(reservation_id),
         noise_level INT,
