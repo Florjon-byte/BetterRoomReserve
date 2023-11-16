@@ -68,15 +68,6 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-@app.get("/home")
-def post_test_data():
-    cur, conn = db.openCursor()
-    query = "SELECT * FROM user_data WHERE net_id = 'dg3314'"
-    cur.execute(query)
-    results = cur.fetchall()
-    db.commitAndClose(cur, conn)
-    return results
-
 @app.get("/reserve")
 async def get_room_reservation():
 #    response = await 
@@ -99,9 +90,6 @@ def authenticate_user():
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
-
-def get_room_info(room_id):
-    pass
 
 def get_room_info(room_id):
     pass
