@@ -71,3 +71,13 @@ def createSurvey(room_id, reservation_id, noise_level, working_outlets, working_
   cur.execute("select * from survey")
   print(cur.fetchall())
   commitAndClose(cur,conn)
+
+def getRoomByID(cur, room_id):
+  cur.execute("Select * from room where room_id = '" + room_id + "'")
+  return cur.fetchall()
+
+# def getRoomByID():
+# def getReservationByID():
+# def getReservationByUserID():
+# def getSurveyByRoomID():
+# def getSurveyByID():

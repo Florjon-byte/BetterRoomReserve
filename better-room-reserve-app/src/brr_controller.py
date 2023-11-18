@@ -33,17 +33,13 @@ class Room(BaseModel):
     reservations: list[str] = []
 
 class Reservation(BaseModel):
-    reservation_id: int
     date: str
     start_time: str
     end_time: str
-    floor: str
     room_id: str
     net_id: str
-    availability: bool
 
 class Survey(BaseModel):
-    survey_id: int
     user_id: str
     room_id: str
     reservation_id: int
@@ -72,11 +68,16 @@ def read_root():
     return {"Hello": "World"}
 
 @app.get("/reserve")
-async def get_room_reservation():
-#    response = await 
-    pass
+async def check_reservation(reservation: Reservation):
+    reservation_info = reservation.dict()
+    if reservation.room_id:
+        cur, conn = db.openCursor()
+        room_info = db.getRoomByID(cur, reservation.room_id)
+        print(room_info)
+        db.commitAndClose(cur, conn)
+        return room_info
 
-def reserve_room():
+def reserve():
     return {"Hello": "World"}
 
 @app.get("/profile")
