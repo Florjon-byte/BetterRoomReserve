@@ -15,7 +15,6 @@ origins = [
 sys.path.append("../../databases")
 import dbMethods as db
 
-LOCAL_URL = "http://localhost:8000/"
 
 class UserModel(BaseModel):
     net_id: str

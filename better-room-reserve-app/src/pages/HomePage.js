@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import '../cssfiles/App.css';
 
 export function Home(){
-
   const navigate = useNavigate()
 
   const handleLoginClick = () => { 
