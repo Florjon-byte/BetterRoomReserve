@@ -24,13 +24,7 @@ class UserModel(BaseModel):
 
 class Room(BaseModel):
     room_id: str
-    max_occupancy: int
     building: str
-    floor: str
-    outlets: bool
-    monitor: bool
-    whiteboard: bool
-    reservations: list[str] = []
 
 class Reservation(BaseModel):
     date: str
