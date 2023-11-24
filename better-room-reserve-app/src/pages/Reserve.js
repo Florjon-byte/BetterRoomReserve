@@ -21,6 +21,7 @@ function runSize(){
     });
 }
 
+
 export function Reserve(){
     const navigate = useNavigate()
     const size = ["Individual (1)", "Medium (5)", "Large (8)"]
@@ -38,19 +39,10 @@ export function Reserve(){
         navigate("/login")
     }
 
-    let index = 0 
-    const changeFloors = (command) => {
-        const floors = ["3", "4"]
-        if(command === "up"){
-            index++ 
-        } else if(command === "down"){
-            index--
-        }
-        if(index >= floors.length || index <= 0){
-            index = 0
-        } 
-        setFloor(floors[index])
+    const changeFloors = () => {
+        setFloor(floor => floor === "3" ? "4" : "3");
     }
+
 
     return (
         <div> 
@@ -127,29 +119,23 @@ export function Reserve(){
                 <section className="reservation_service">
                     <div className="floorbuttons"> 
                         <button className="coolButton" style={{ marginBottom: "15%"}}
-                        onClick={changeFloors("up")}> Up </button>
+                        onClick={() => changeFloors()}> Up </button>
                         <button className="coolButton"
-                        onClick={changeFloors("down")}> Down </button>
+                        onClick={() => changeFloors()}> Down </button>
                     </div>
                     <div className='floormap'>
-
-                        {/* 
-                            perhaps could just the on click command to return which
-                            floor map is being returned instead of having a change state 
-
-                            side note: will still probably need to change state when having the maps
-                        */}
-
+                        <lable> Floor: {floor}</lable>
+                        {floor === "3" &&
                         <div className='thirdfloor'> 
                             <img className='third' src={third} width="600" height="600"
-                            style={{ opacity: floor === "3" ? 1 : 0 }}></img>
-                        </div>
+                            ></img>
+                        </div>}
 
+                        {floor === "4" && 
                         <div className='forthfloor'>
                             <img className='forth' src={forth} width="600" height="600"
-                            style={{ opacity: floor === "4" ? 1 : 0 }}></img>
-                        </div>
-                        
+                            ></img>
+                        </div>}
                     </div>
 
                     <div className="times"> 
