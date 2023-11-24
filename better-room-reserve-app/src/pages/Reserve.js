@@ -32,7 +32,6 @@ export function Reserve(){
 
     const [floor, setFloor] = useState() // for changing floor levels 
 
-
     const handleLoginClick = () => { 
         navigate("/login")
       }
@@ -66,9 +65,9 @@ export function Reserve(){
             {/* Reserve */}
 
             {/* Filters */}
-            <div class="filter">
+            <section class="filter">
                 <h3>Filters:</h3>
-                <div className='select'>
+                <form className='select' method='POST'>
                     <div className='size'>
                         <label>Size:</label>
                         <select className='dropdown' selected="--">
@@ -102,14 +101,33 @@ export function Reserve(){
                             ))}
                         </select>
                     </div>
-                </div>
-            </div>
+
+                    <button type='submit' className='coolButton'> Apply </button>
+                </form>
+            </section>
 
             {/* Floor Map */}   
+            <section className="reservation">
 
-            <div className='floormap'>
-                
-            </div>
+                <section className="reservation_service">
+                    <div className="floorbuttons"> 
+                        <button className="coolButton" style={{ marginBottom: "15%"}}> Up </button>
+                        <button className="coolButton"> Down </button>
+                    </div>
+                    <div className='floormap'>
+                        
+                    </div>
+
+                    <div className="times"> 
+
+                    </div>
+                </section>
+
+            </section>
+
+            <section className='times_selected'>
+
+            </section>
 
             {/* Footer */}
             <footer className="bg-dark text-center text-white"> 
