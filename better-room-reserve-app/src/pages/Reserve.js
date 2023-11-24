@@ -1,4 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
+import third from "../images/thirdfloor.png"
+import forth from "../images/forthfloor.png"
 import "../cssfiles/reserve.css"
 import React, { Component, useEffect, useState, Route } from "react"
 import { useNavigate } from 'react-router-dom'
@@ -30,12 +32,25 @@ export function Reserve(){
         return ["00", "30"].map(min => `${hour}:${min} ${ampm}`);
     })
 
-    const [floor, setFloor] = useState() // for changing floor levels 
+    const [floor, setFloor] = useState("3") // for changing floor levels and maps
 
     const handleLoginClick = () => { 
         navigate("/login")
-      }
-    
+    }
+
+    let index = 0 
+    const changeFloors = (command) => {
+        const floors = ["3", "4"]
+        if(command === "up"){
+            index++ 
+        } else if(command === "down"){
+            index--
+        }
+        if(index >= floors.length || index <= 0){
+            index = 0
+        } 
+        setFloor(floors[index])
+    }
 
     return (
         <div> 
@@ -111,10 +126,29 @@ export function Reserve(){
 
                 <section className="reservation_service">
                     <div className="floorbuttons"> 
-                        <button className="coolButton" style={{ marginBottom: "15%"}}> Up </button>
-                        <button className="coolButton"> Down </button>
+                        <button className="coolButton" style={{ marginBottom: "15%"}}
+                        onClick={changeFloors("up")}> Up </button>
+                        <button className="coolButton"
+                        onClick={changeFloors("down")}> Down </button>
                     </div>
                     <div className='floormap'>
+
+                        {/* 
+                            perhaps could just the on click command to return which
+                            floor map is being returned instead of having a change state 
+
+                            side note: will still probably need to change state when having the maps
+                        */}
+
+                        <div className='thirdfloor'> 
+                            <img className='third' src={third} width="600" height="600"
+                            style={{ opacity: floor === "3" ? 1 : 0 }}></img>
+                        </div>
+
+                        <div className='forthfloor'>
+                            <img className='forth' src={forth} width="600" height="600"
+                            style={{ opacity: floor === "4" ? 1 : 0 }}></img>
+                        </div>
                         
                     </div>
 
