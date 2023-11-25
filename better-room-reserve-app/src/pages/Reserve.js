@@ -127,14 +127,32 @@ export function Reserve(){
                         <lable> Floor: {floor}</lable>
                         {floor === "3" &&
                         <div className='thirdfloor'> 
-                            <img className='third' src={third} width="600" height="600"
-                            ></img>
+                            <img className='thirdFloorMap' src={third} width="750" height="530"
+                            usemap="#thirdFloor"/>
+                            <map name="thirdFloor">
+                                <area shape="rect" alt="hello" coords="317,277,354,315" href="#" />
+                                <area shape="rect" coords="316,315,353,353" href="#" />
+                                <area shape="rect" coords="355,315,391,355" href="#" />
+                                <area shape="rect" coords="355,276,391,314" href="#" />
+                                <area shape="rect" coords="619,212,651,245" href="#" />
+                                <area shape="rect" coords="551,210,583,245" href="#" />
+                                <area shape="rect" coords="585,211,617,246" href="#" />
+                                <area shape="rect" coords="550,277,583,312" href="#" />
+                                <area shape="rect" coords="585,277,617,312" href="#" />
+                                <area shape="rect" coords="617,277,648,311" href="#" />
+                                <area shape="rect" coords="550,315,583,349" href="#" />
+                                <area shape="rect" coords="586,315,615,349" href="#" />
+                                <area shape="rect" coords="618,315,649,358" href="#" />
+                                <area shape="rect" coords="213,377,249,416" href="#" />
+                                <area shape="rect" coords="252,378,288,416" href="#" />
+                            </map>
+
                         </div>}
 
                         {floor === "4" && 
                         <div className='forthfloor'>
-                            <img className='forth' src={forth} width="600" height="600"
-                            ></img>
+                            <img className='forth' src={forth} width="750" height="600" 
+                            useMap='#forth'></img>
                         </div>}
                     </div>
 

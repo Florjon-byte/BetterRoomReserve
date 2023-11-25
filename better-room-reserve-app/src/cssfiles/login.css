@@ -52,10 +52,9 @@
 }
 .form *{
     font-family: 'Poppins',sans-serif;
-    color: #ffffff;
+    color: black;
     letter-spacing: 0.5px;
     outline: none;
-    border: none;
 }
 .form h3{
     font-size: 32px;
@@ -74,6 +73,8 @@
     display: block;
     height: 50px;
     width: 100%;
+    border-width: 0.1px;
+    border-color: black;
     background-color: rgba(255,255,255,0.07);
     border-radius: 3px;
     padding: 0 10px;
@@ -82,11 +83,12 @@
     font-weight: 300;
 }
 ::placeholder{
-    color: #e5e5e5;
+    color: black;
 }
 .button{
     margin-top: 50px;
     width: 100%;
+    border-width: 0.1px;
     background-color: #ffffff;
     color: #080710;
     padding: 15px 0;
