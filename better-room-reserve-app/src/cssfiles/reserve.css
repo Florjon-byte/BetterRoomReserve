@@ -62,7 +62,9 @@
 }
 
 .reservation_service .floorbuttons { 
-    display: flex;
-    justify-content: flex-start;
+    display: flex; 
+    justify-content: center;
     flex-direction: column;
+    align-items: center;
 }
+

@@ -119,9 +119,9 @@ export function Reserve(){
                 <section className="reservation_service">
                     <div className="floorbuttons"> 
                         <button className="coolButton" style={{ marginBottom: "15%"}}
-                        onClick={() => changeFloors()}> Up </button>
+                        onClick={() => changeFloors()}> ▲ </button>
                         <button className="coolButton"
-                        onClick={() => changeFloors()}> Down </button>
+                        onClick={() => changeFloors()}> ▼ </button>
                     </div>
                     <div className='floormap'>
                         <lable> Floor: {floor}</lable>
@@ -146,13 +146,40 @@ export function Reserve(){
                                 <area shape="rect" coords="213,377,249,416" href="#" />
                                 <area shape="rect" coords="252,378,288,416" href="#" />
                             </map>
-
                         </div>}
 
                         {floor === "4" && 
                         <div className='forthfloor'>
-                            <img className='forth' src={forth} width="750" height="600" 
-                            useMap='#forth'></img>
+                            <img className='forth' src={forth} width="750" height="560" 
+                            usemap="#forthFloor"></img>
+                            <map name="forthFloor">
+                                <area shape="rect" coords="229,13,292,49"   href="#" />
+                                <area shape="rect" coords="230,53,292,86"   href="#" />
+                                <area shape="rect" coords="230,88,293,122"  href="#" />
+                                <area shape="rect" coords="229,126,292,176" href="#" />
+                                <area shape="rect" coords="347,306,367,325" href="#" />
+                                <area shape="rect" coords="369,305,387,323" href="#" />
+                                <area shape="rect" coords="390,307,407,324" href="#" />
+                                <area shape="rect" coords="348,328,366,345" href="#" />
+                                <area shape="rect" coords="369,329,387,345" href="#" />
+                                <area shape="rect" coords="390,328,407,345" href="#" />
+                                <area shape="rect" coords="348,348,367,364" href="#" />
+                                <area shape="rect" coords="389,348,407,364" href="#" />
+                                <area shape="rect" coords="444,329,480,363" href="#" />
+                                <area shape="rect" coords="483,331,519,363" href="#" />
+                                <area shape="rect" coords="552,307,570,324" href="#" />
+                                <area shape="rect" coords="573,307,592,324" href="#" />
+                                <area shape="rect" coords="593,307,611,324" href="#" />
+                                <area shape="rect" coords="614,306,631,324" href="#" />
+                                <area shape="rect" coords="634,306,653,323" href="#" />
+                                <area shape="rect" coords="552,327,570,344" href="#" />
+                                <area shape="rect" coords="574,328,589,343" href="#" />
+                                <area shape="rect" coords="595,327,610,342" href="#" />
+                                <area shape="rect" coords="615,328,631,344" href="#" />
+                                <area shape="rect" coords="634,327,653,344" href="#" />
+                                <area shape="rect" coords="553,348,570,366" href="#" />
+                                <area shape="rect" coords="634,348,652,364" href="#" />
+                            </map>
                         </div>}
                     </div>
 
