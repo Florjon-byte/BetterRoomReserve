@@ -68,3 +68,18 @@
     align-items: center;
 }
 
+.reservation_service .times{
+    background: #fff;
+    padding: 20px; 
+    border-radius: 25px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.reservation_service .times form{
+    display: flex;
+    flex-direction: column; 
+    width: auto;
+    max-height: 560px; 
+    overflow-y: scroll;
+}
+

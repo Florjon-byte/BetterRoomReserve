@@ -33,6 +33,18 @@ export function Reserve(){
         return ["00", "30"].map(min => `${hour}:${min} ${ampm}`);
     })
 
+    const generateButtonTimes = (start_time = "8:00 AM") => {
+        const button_times = []
+        const i = times.findIndex((start) => start === start_time)
+        console.log(i)
+        for(let index = i; index < times.length - 2; index++){
+            button_times.push(`${times[index]} - ${times[index+1]}`)
+        }
+
+        return button_times
+    }
+
+
     const [floor, setFloor] = useState("3") // for changing floor levels and maps
 
     const handleLoginClick = () => { 
@@ -184,7 +196,15 @@ export function Reserve(){
                     </div>
 
                     <div className="times"> 
-
+                        <label>Available Times</label>
+                        <form>
+                            {generateButtonTimes("8:00 AM").map(time => (
+                                <button style={{ 
+                                    marginTop: "10%",
+                                    width: "175px"
+                            }} className='coolButton'>{time}</button>
+                            ))}
+                        </form>
                     </div>
                 </section>
 
