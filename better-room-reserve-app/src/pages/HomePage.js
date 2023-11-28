@@ -21,10 +21,10 @@ export function Home(){
                 <a class="nav-link active" aria-current="page" href="/">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/profile">Profile</a>
+                <a class="nav-link" href="/reserve">Reserve</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/reserve">Reserve</a>
+                <a class="nav-link" href="/profile">Profile</a>
               </li>
             </ul>
           </div>
@@ -48,8 +48,8 @@ export function Home(){
       </div>
 
       <div className='button-group'>
-        <button className='nyubutton'>Reserve an Individual Room</button>
-        <button className='nyubutton'>Reserve a Large Room</button>
+        <button className='nyubutton' href="/reserve">Reserve an Individual Room</button>
+        <button className='nyubutton' href="/reserve">Reserve a Large Room</button>
       </div>
 
       {/* Second Div */}

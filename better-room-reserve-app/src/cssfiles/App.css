@@ -83,10 +83,6 @@
   margin: 3em;
 }
 
-.leftside{
-  display: grid;
-  align-items: stretch;
-}
 
 .dibner-image{
   display: flex; 

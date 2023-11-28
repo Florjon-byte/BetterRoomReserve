@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import third from "../images/thirdfloor.png"
 import forth from "../images/forthfloor.png"
 import "../cssfiles/reserve.css"
-import React, { Component, useEffect, useState, Route } from "react"
+import React, { useState } from "react"
 import { useNavigate } from 'react-router-dom'
 import axios from "axios"
 import Papa from "papaparse"
@@ -68,10 +68,10 @@ export function Reserve(){
                         <a class="nav-link" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/profile">Profile</a>
+                        <a class="nav-link" href="/reserve">Reserve</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/reserve">Reserve</a>
+                        <a class="nav-link" href="/profile">Profile</a>
                     </li>
                     </ul>
                 </div>
@@ -199,10 +199,7 @@ export function Reserve(){
                         <label>Available Times</label>
                         <form>
                             {generateButtonTimes("8:00 AM").map(time => (
-                                <button style={{ 
-                                    marginTop: "10%",
-                                    width: "175px"
-                            }} className='coolButton'>{time}</button>
+                                <button className='timebuttons'>{time}</button>
                             ))}
                         </form>
                     </div>
