@@ -21,7 +21,6 @@ function runSize(){
     });
 }
 
-
 export function Reserve(){
     const navigate = useNavigate()
     const size = ["Individual (1)", "Medium (5)", "Large (8)"]
@@ -36,7 +35,6 @@ export function Reserve(){
     const generateButtonTimes = (start_time = "8:00 AM") => {
         const button_times = []
         const i = times.findIndex((start) => start === start_time)
-        console.log(i)
         for(let index = i; index < times.length - 2; index++){
             button_times.push(`${times[index]} - ${times[index+1]}`)
         }
@@ -44,12 +42,98 @@ export function Reserve(){
         return button_times
     }
 
+    const createTimeButtons = (start_time = "8:00 AM") => {
+        return ( generateButtonTimes(start_time).map(time => (
+            <button className='timebuttons'>{time}</button>
+        )) )
+    }
+
+    const [selected, setSelected] = useState([]);
+
+    const toggle = (time) => {
+        if(selected.includes(time)) {
+          setSelected(selected.filter(b => b !== time))
+        } else {
+          setSelected([...selected, time]);
+        }
+    }
+
+    const findReservationTime = () => {
+        selected.sort((a, b) => {
+            const [startA] = a.split(' - '); 
+            const [startB] = b.split(' - ');
+            const timeA = new Date('1970/01/01 ' + startA);
+            const timeB = new Date('1970/01/01 ' + startB);  
+            return timeA - timeB;
+        });
+
+        let startDate = 0;
+        let endDate = 0;
+        let consecutive = true;
+
+        let test_times = [] 
+        selected.forEach(time => {
+            const [start, end] = time.split(' - ');
+            const [start_hr_min, start_ampm] = start.split(" ")
+            let [start_hr, start_min] = start_hr_min.split(":")
+
+            const [end_hr_min, end_ampm] = end.split(" ")
+            let [end_hr, end_min] = end_hr_min.split(":")
+
+            start_hr = parseInt(start_hr)
+            end_hr = parseInt(end_hr)
+            start_min = parseInt(start_min)
+            end_min = parseInt(end_min)
+        
+            if(start_ampm === "PM" && start_hr !== 12){
+                start_hr += 12 
+            } 
+            if (end_ampm === "PM" && end_hr !== 12) {
+                end_hr += 12 
+            }
+
+            // console.log(start_hr, start_min)
+            // console.log(end_hr, end_min)
+
+            test_times.push(start, end)
+
+            // if ( end_hr - start_hr >= 1 && end_min - start_min === 0){
+            //     consecutive = false; 
+            // }
+        })
+
+        for(let index = 1; index < test_times.length; index+=2){
+            if(test_times.length !== index){
+                
+                // compare test_times[index] and test_times[index+2] 
+                // test_times[index] - test_times[index+2] === 30 mins ; otherwise not consecutive 
+
+            }
+            console.log(test_times[index])
+        }
+
+        console.log(test_times)
+
+
+        // if ( selected.length === 0){
+        //     console.log("EMPTY RESERVATION")
+        // } else if(!consecutive){ // if false 
+        //     console.log("ERROR", selected)
+        // } else if (consecutive){ 
+        //     console.log("GOOD", selected)
+        // } 
+    }
 
     const [floor, setFloor] = useState("3") // for changing floor levels and maps
 
     const handleLoginClick = () => { 
         navigate("/login")
     }
+
+    // made to make buttons not defualt to refreshing the page without an href 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+      }
 
     const changeFloors = () => {
         setFloor(floor => floor === "3" ? "4" : "3");
@@ -89,7 +173,7 @@ export function Reserve(){
                 <form className='select' method='POST'>
                     <div className='size'>
                         <label>Size:</label>
-                        <select className='dropdown' selected="--">
+                        <select className='dropdown'>
                         <option selected=""></option>
                             {size.map(option => (
                                 <option key={option} value={option}>
@@ -100,7 +184,7 @@ export function Reserve(){
                     </div>
                     <div className='noise'>
                         <label>Noise Level:</label>
-                        <select className='dropdown' selected="--"> 
+                        <select className='dropdown'> 
                         <option selected=""></option>
                             {noise.map(option => (
                                 <option key={option} value={option}>
@@ -197,18 +281,20 @@ export function Reserve(){
 
                     <div className="times"> 
                         <label>Available Times</label>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             {generateButtonTimes("8:00 AM").map(time => (
-                                <button className='timebuttons'>{time}</button>
+                                <button onClick={() => {toggle(time)}} 
+                                className={selected.includes(time) ? "selected" : "timebuttons"}
+                                >{time}
+                                </button>
                             ))}
                         </form>
                     </div>
                 </section>
-
             </section>
 
             <section className='times_selected'>
-
+                <button className='coolButton' onClick={() => {findReservationTime()}}>Click Me</button>
             </section>
 
             {/* Footer */}
