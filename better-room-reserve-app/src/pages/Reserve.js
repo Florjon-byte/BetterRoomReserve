@@ -1,9 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import third from "../images/thirdfloor.png"
 import forth from "../images/forthfloor.png"
+import calendar from "../images/calendar.png"
 import "../cssfiles/reserve.css"
 import React, { useState } from "react"
 import { useNavigate } from 'react-router-dom'
+import DatePicker from "react-datepicker"
 import axios from "axios"
 import Papa from "papaparse"
 
@@ -31,6 +33,10 @@ export function Reserve(){
         hour = hour % 12 || 12; 
         return ["00", "30"].map(min => `${hour}:${min} ${ampm}`);
     })
+
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
 
     const generateButtonTimes = (start_time = "8:00 AM") => {
         const button_times = []
@@ -92,36 +98,28 @@ export function Reserve(){
                 end_hr += 12 
             }
 
-            // console.log(start_hr, start_min)
-            // console.log(end_hr, end_min)
-
-            test_times.push(start, end)
-
-            // if ( end_hr - start_hr >= 1 && end_min - start_min === 0){
-            //     consecutive = false; 
-            // }
+            test_times.push([start_hr, start_min], [end_hr, end_min])
         })
 
-        for(let index = 1; index < test_times.length; index+=2){
-            if(test_times.length !== index){
-                
-                // compare test_times[index] and test_times[index+2] 
-                // test_times[index] - test_times[index+2] === 30 mins ; otherwise not consecutive 
+        for(let index = 1; index < test_times.length; index += 2){
+            if(test_times.length - 1 !== index){
 
+                // compare test_times[index] and test_times[index+2] 
+                // test_times[inde+2] - test_times[index] === 30 mins ; otherwise not consecutive 
+                if ( test_times[index+2][0] - test_times[index][0] > 1 || (test_times[index+2][0] - test_times[index][0] === 1) &&
+                Math.abs(test_times[index+2][1] - test_times[index][1]) !== 30){
+                    consecutive = false;
+                }
             }
-            console.log(test_times[index])
         }
 
-        console.log(test_times)
-
-
-        // if ( selected.length === 0){
-        //     console.log("EMPTY RESERVATION")
-        // } else if(!consecutive){ // if false 
-        //     console.log("ERROR", selected)
-        // } else if (consecutive){ 
-        //     console.log("GOOD", selected)
-        // } 
+        if ( selected.length === 0){
+            console.log("EMPTY RESERVATION")
+        } else if(!consecutive){ // if false 
+            console.log("ERROR", selected)
+        } else if (consecutive){ 
+            console.log("GOOD", selected)
+        } 
     }
 
     const [floor, setFloor] = useState("3") // for changing floor levels and maps
@@ -281,6 +279,10 @@ export function Reserve(){
 
                     <div className="times"> 
                         <label>Available Times</label>
+                        
+                        <img className='calendar' src={calendar}/>
+                        
+                        
                         <form onSubmit={handleSubmit}>
                             {generateButtonTimes("8:00 AM").map(time => (
                                 <button onClick={() => {toggle(time)}} 
@@ -294,7 +296,7 @@ export function Reserve(){
             </section>
 
             <section className='times_selected'>
-                <button className='coolButton' onClick={() => {findReservationTime()}}>Click Me</button>
+                <button className='coolButton' onClick={() => {findReservationTime()}}>Reserve</button>
             </section>
 
             {/* Footer */}

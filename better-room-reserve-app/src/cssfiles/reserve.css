@@ -129,6 +129,16 @@
     margin-top: 10%;
 }
 
+.calendar{
+    margin-left: 25%;
+    width: 15%;
+    height: auto; 
+}
+
+.times_selected{
+    display: flex; 
+    justify-content: center;
+}
 
 
 
