@@ -3,7 +3,7 @@ from typing import Optional
 import uuid
 
 class LogIn(BaseModel):
-    username: str
+    email: EmailStr
     password: str
 
 class UserModel(BaseModel):

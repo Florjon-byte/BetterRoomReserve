@@ -1,24 +1,26 @@
 #!/usr/bin/python3
 import sys
 import os
-import binascii
 import psycopg2
 import uuid
 import datetime
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from typing import Union, List
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, EmailStr
 from fastapi.middleware.cors import CORSMiddleware
 
-
-origins = [
-    "http://localhost:3000"
-]
 sys.path.append("../../databases")
 import dbMethods as db
 import schemas
 from auth import AuthHandler
+
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3000/login",
+    "http://localhost:3000/profile",
+    "http://localhost:3000/reserve"
+]
 
 # Connect to your postgres DB
 conn = psycopg2.connect("dbname=betterroomreserve user=postgres")
@@ -33,14 +35,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app = FastAPI()
 auth_handler = AuthHandler()
 
-@app.get("/login")
+@app.post("/login")
 async def login(login_info: schemas.LogIn):
     verification = None
     cur, conn = db.openCursor()
-    verification = db.getUserByID(cur, login_info.username)
+    verification = db.getUserByEmail(cur, login_info.email)
     
     if (verification is None) or (not auth_handler.verify_password(login_info.password, verification[0][2])):
         raise HTTPException(status_code=401, detail='Invalid username and/or password')
@@ -50,7 +51,7 @@ async def login(login_info: schemas.LogIn):
             SET auth_token = %s
             WHERE net_id = %s;
             """
-    cur.execute(query,(jwtoken, login_info.username))
+    cur.execute(query,(jwtoken, login_info.email))
     db.commitAndClose(cur, conn)
     return { 'token': jwtoken }
 
@@ -62,7 +63,7 @@ async def logout(user: schemas.UserModel):
     db.commitAndClose(cur, conn)
     return { "logout" : True }
 
-@app.get("/profile")
+@app.post("/profile")
 async def get_user_info(user: schemas.UserModel):
     if user:
         cur, conn = db.openCursor()

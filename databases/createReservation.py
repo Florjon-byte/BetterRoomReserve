@@ -16,7 +16,7 @@ query = '''
         start_time TIME NOT NULL,
         end_time TIME NOT NULL,
         room_id VARCHAR(256) REFERENCES room(room_id),
-        net_id VARCHAR(256) REFERENCES user_data(net_id);'''
+        net_id VARCHAR(256) REFERENCES user_data(net_id));'''
 
 cur.execute(query)
 
