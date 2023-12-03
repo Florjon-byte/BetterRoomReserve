@@ -16,7 +16,7 @@ Our application called BetterRoomReserve
 
 > install the libraries
 
-`pip install TurboGears2`
+`pip install fastapi`
 
 `pip install psycopg2-binary`
 

@@ -1,6 +1,6 @@
-*,
-*:before,
-*:after{
+.login,
+.login *:before,
+.login *:after{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
@@ -30,13 +30,13 @@
 .shape:last-child{
     background: linear-gradient(
         to right,
-        #ff512f,
-        #f09819
+        #7f05ab,
+        #8f31be
     );
     right: -30px;
     bottom: -80px;
 }
-form{
+.form{
     height: 520px;
     width: 400px;
     background-color: rgba(255,255,255,0.13);
@@ -50,30 +50,31 @@ form{
     box-shadow: 0 0 40px rgba(8,7,16,0.6);
     padding: 50px 35px;
 }
-form *{
+.form *{
     font-family: 'Poppins',sans-serif;
-    color: #ffffff;
+    color: black;
     letter-spacing: 0.5px;
     outline: none;
-    border: none;
 }
-form h3{
+.form h3{
     font-size: 32px;
     font-weight: 500;
     line-height: 42px;
     text-align: center;
 }
 
-label {
+.label {
     display: block;
     margin-top: 30px;
     font-size: 16px;
     font-weight: 500;
 }
-input{
+.input{
     display: block;
     height: 50px;
     width: 100%;
+    border-width: 0.1px;
+    border-color: black;
     background-color: rgba(255,255,255,0.07);
     border-radius: 3px;
     padding: 0 10px;
@@ -82,11 +83,12 @@ input{
     font-weight: 300;
 }
 ::placeholder{
-    color: #e5e5e5;
+    color: black;
 }
-button{
+.button{
     margin-top: 50px;
     width: 100%;
+    border-width: 0.1px;
     background-color: #ffffff;
     color: #080710;
     padding: 15px 0;

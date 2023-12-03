@@ -1,0 +1,145 @@
+.filter{
+    display: flex; 
+    justify-content: space-evenly;
+    flex-direction: column;
+    margin-top: 3%;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.filter .select{
+    display: inherit; 
+    justify-content: inherit;
+    flex-direction: row;
+}
+
+.filter .select label{
+    font-size: 120%;
+    padding: 10px;
+}
+
+.filter .dropdown {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+  
+.filter .dropdown option {
+    padding: 10px;
+}
+
+.coolButton {
+    width: 140px;
+    height: 45px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+}
+  
+.coolButton:hover {
+    background-color: rgb(139, 19, 156);
+    box-shadow: 0px 15px 20px rgba(139, 19, 156, 0.4);
+    color: #fff;
+    transform: translateY(-7px);
+}
+
+.reservation_service {
+    display: flex; 
+    justify-content: space-evenly;
+    flex-direction: row;
+    margin-top: 5%;
+}
+
+.reservation_service .floorbuttons { 
+    display: flex; 
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.reservation_service .times{
+    background: #fff;
+    padding: 20px; 
+    border-radius: 25px;
+    width: 250px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.reservation_service .times form{
+    display: grid;
+    flex-direction: column; 
+    width: auto;
+    max-height: 560px; 
+    overflow-y: scroll;
+}
+
+.reservation_service .times .timebuttons{
+    width: 200px;
+    height: 75px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+    margin-top: 10%;
+}
+
+.reservation_service .times .timebuttons:hover{
+    background-color: rgb(139, 19, 156);
+    box-shadow: 0px 15px 20px rgba(139, 19, 156, 0.4);
+    color: #fff;
+    transform: translateY(-7px);
+}
+
+.selected { 
+    width: 200px;
+    height: 75px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
+    background-color: #ADD8E6;
+    border: none;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+    margin-top: 10%;
+}
+
+.calendar{
+    margin-left: 25%;
+    width: 15%;
+    height: auto; 
+}
+
+.times_selected{
+    display: flex; 
+    justify-content: center;
+}
+
+
+
+
