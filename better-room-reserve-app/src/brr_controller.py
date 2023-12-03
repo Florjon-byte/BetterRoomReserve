@@ -1,6 +1,10 @@
 #!/usr/bin/python3
 import sys
+import os
+import binascii
 import psycopg2
+import uuid
+import datetime
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from typing import Union, List
 from fastapi import FastAPI
@@ -13,34 +17,8 @@ origins = [
 ]
 sys.path.append("../../databases")
 import dbMethods as db
-
-class UserModel(BaseModel):
-    net_id: str
-    email: EmailStr
-    password: str
-    individual_time: int
-    group_time: int
-    reservations: list[str]
-
-class Room(BaseModel):
-    room_id: str
-    building: str
-
-class Reservation(BaseModel):
-    date: str
-    start_time: str
-    end_time: str
-    room_id: str
-    net_id: str
-
-class Survey(BaseModel):
-    user_id: str
-    room_id: str
-    reservation_id: int
-    noise_level: int
-    working_outlets: bool
-    working_monitor: bool
-    whiteboards: str
+import schemas
+from auth import AuthHandler
 
 # Connect to your postgres DB
 conn = psycopg2.connect("dbname=betterroomreserve user=postgres")
@@ -56,13 +34,74 @@ app.add_middleware(
 )
 
 app = FastAPI()
+auth_handler = AuthHandler()
 
-@app.get("/api")
-def read_root():
-    return {"Hello": "World"}
+@app.get("/login")
+async def login(login_info: schemas.LogIn):
+    verification = None
+    cur, conn = db.openCursor()
+    verification = db.getUserByID(cur, login_info.username)
+    
+    if (verification is None) or (not auth_handler.verify_password(login_info.password, verification[0][2])):
+        raise HTTPException(status_code=401, detail='Invalid username and/or password')
+    jwtoken = auth_handler.encode_token(verification[0][0])
+    query = """
+            UPDATE user_data
+            SET auth_token = %s
+            WHERE net_id = %s;
+            """
+    cur.execute(query,(jwtoken, login_info.username))
+    db.commitAndClose(cur, conn)
+    return { 'token': jwtoken }
 
-@app.get("/reserve")
-async def check_reservation(reservation: Reservation):
+@app.get("/logout")
+async def logout(user: schemas.UserModel):
+    cur, conn = db.openCursor()
+    query = "UPDATE user_data SET auth_token = NULL WHERE net_id = '" + user.net_id + "';"
+    cur.execute(query)
+    db.commitAndClose(cur, conn)
+    return { "logout" : True }
+
+@app.get("/profile")
+async def get_user_info(user: schemas.UserModel):
+    if user:
+        cur, conn = db.openCursor()
+        profile = db.getUserByID(cur, user.net_id)
+        db.commitAndClose(cur, conn)
+        return profile
+
+@app.delete("/profile/cancel")
+def cancel_reservation(reservation_id: uuid.UUID):
+    cur, conn = db.openCursor()
+
+
+@app.get("/reserve/filter")
+async def get_filtered_info(filters: schemas.Filters):
+    query = "SELECT room_id FROM room WHERE "
+
+    chain = 0
+    if (filters.size):
+        query += "max_occupancy = " + str(filters.size)
+        chain = 1
+    if (filters.noise_level):
+        if (chain > 0):
+            query += " AND "
+        query += "noise_level = '" + filters.noise_level + "'"
+    if (filters.start_time):
+        if (chain > 0):
+            query += " AND "
+        query += "start_time = "+ filters.start_time
+        chian = 0
+
+    cur, conn = db.openCursor()
+    cur.execute(query)
+    result = cur.fetchall()
+    db.commitAndClose(cur, conn)
+    print(result)
+    return result
+
+@app.get("/reserve/room-info")
+async def get_room_info(reservation: schemas.Reservation):
     reservation_info = reservation.dict()
     if reservation.room_id:
         cur, conn = db.openCursor()
@@ -71,23 +110,15 @@ async def check_reservation(reservation: Reservation):
         db.commitAndClose(cur, conn)
         return room_info
 
-def reserve():
-    return {"Hello": "World"}
+@app.get("/reserve")
+async def reserve(reservation_info: schemas.Reservation):
+    date = reservation_info.date
+    start = reservation_info.start_time
+    end = reservation_info.end_time
+    room = reservation_info.room_id
+    user = reservation_info.net_id
 
-@app.get("/profile")
-def read_root():
-    return {"Hello": "World"}
+# @app.get("/items/{item_id}")
+# def read_item(item_id: int, q: Union[str, None] = None):
+#     return {"item_id": item_id, "q": q}
 
-def cancel_reservation():
-    return {"hello": "world"}
-
-@app.get("/login")
-def authenticate_user():
-    return {"Hello": "World"}
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-def get_room_info(room_id):
-    pass

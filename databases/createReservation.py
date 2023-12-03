@@ -11,14 +11,12 @@ cur = conn.cursor()
 
 query = '''
         CREATE TABLE IF NOT EXISTS reservation 
-        (reservation_id BIGSERIAL NOT NULL PRIMARY KEY,
+        (reservation_id UUID NOT NULL PRIMARY KEY,
         date DATE NOT NULL ,
         start_time TIME NOT NULL,
         end_time TIME NOT NULL,
-        floor VARCHAR(256) NOT NULL,
         room_id VARCHAR(256) REFERENCES room(room_id),
-        net_id VARCHAR(256) REFERENCES user_data(net_id),
-        availability BOOL DEFAULT FALSE);'''
+        net_id VARCHAR(256) REFERENCES user_data(net_id);'''
 
 cur.execute(query)
 
