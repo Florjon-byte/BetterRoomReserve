@@ -63,7 +63,7 @@ async def logout(user: schemas.UserModel):
     db.commitAndClose(cur, conn)
     return { "logout" : True }
 
-@app.get("/profile")
+@app.post("/profile")
 async def get_user_info(user: schemas.UserModel):
     if user:
         cur, conn = db.openCursor()
