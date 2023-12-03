@@ -75,6 +75,10 @@ def getUserByID(cur, user_id):
   cur.execute("Select * from user_data where net_id = '" + user_id + "'")
   return cur.fetchall()
 
+def getUserByEmail(cur, user_email):
+  cur.execute("Select * from user_data where email = '" + user_email + "'")
+  return cur.fetchall()
+
 def getReservationByID(cur, reservation_id):
   cur.execute("Select * from reservation where reservation_id = '" + reservation_id + "'")
   return cur.fetchall()

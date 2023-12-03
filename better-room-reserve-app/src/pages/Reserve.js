@@ -1,13 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import third from "../images/thirdfloor.png"
-import forth from "../images/forthfloor.png"
-import calendar from "../images/calendar.png"
-import "../cssfiles/reserve.css"
-import React, { useState } from "react"
-import { useNavigate } from 'react-router-dom'
-import DatePicker from "react-datepicker"
-import axios from "axios"
-import Papa from "papaparse"
+import Papa from "papaparse";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../cssfiles/reserve.css";
+import calendar from "../images/calendar.png";
+import forth from "../images/forthfloor.png";
+import third from "../images/thirdfloor.png";
 
 function runSize(){
     let filePath = "Rooms.csv"
