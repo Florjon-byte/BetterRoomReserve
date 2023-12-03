@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from psycopg2.extras import register_uuid
 
 def openCursor(dbname="betterroomreserve", user="postgres"):
   # Connect to your postgres DB
@@ -29,45 +30,58 @@ def createUser(net_id, email, password):
           (%s, %s, %s)
           '''
   cur.execute(query,(net_id, email, password))
-  cur.execute("select * from user_data")
-  print(cur.fetchall())
   commitAndClose(cur,conn)
 
-def createRoom(room_id, max_occupancy, building, floor, outlets, monitor, whiteboard):
+def createRoom(room_id, max_occupancy, noise_level, building, floor, outlets, monitor, whiteboard):
   cur, conn = openCursor();
   query = '''
           INSERT INTO room
-          (room_id, max_occupancy, building, floor, outlets, monitor, whiteboard)
+          (room_id, max_occupancy, noise_level, building, floor, outlets, monitor, whiteboard)
           VALUES
-          (%s,%s,%s,%s,%s,%s,%s)
+          (%s,%s,%s,%s,%s,%s,%s,%s)
           '''
-  cur.execute(query,(room_id, max_occupancy, building, floor, outlets, monitor, whiteboard))
-  cur.execute("select * from room")
-  print(cur.fetchall())
+  cur.execute(query,(room_id, max_occupancy, noise_level, building, floor, outlets, monitor, whiteboard))
   commitAndClose(cur,conn)
 
-def createReservation(date, start_time, end_time, floor, room_id, net_id):
+def createReservation(res_id, date, start_time, end_time, room_id, net_id):
+  register_uuid()
   cur, conn = openCursor();
   query = '''
           INSERT INTO reservation
-          (date, start_time, end_time, floor, room_id, net_id, availability)
+          (reservation_id, date, start_time, end_time, room_id, net_id)
           VALUES
-          (%s, %s, %s, %s, %s, %s, %s)
+          (%s, %s, %s, %s, %s, %s)
           '''
-  cur.execute(query,(date, start_time, end_time, floor, room_id, net_id))
-  cur.execute("select * from reservation")
-  print(cur.fetchall())
+  cur.execute(query,(res_id, date, start_time, end_time, room_id, net_id))
   commitAndClose(cur,conn)
 
-def createSurvey(room_id, reservation_id, noise_level, working_outlets, working_monitor):
+def createSurvey(survey_id, room_id, reservation_id, noise_level, working_outlets, working_monitor):
+  register_uuid()
   cur, conn = openCursor();
   query = '''
           INSERT INTO survey
-          (room_id, reservation_id, noise_level, working_outlets, working_monitor)
+          (survey_id, room_id, reservation_id, noise_level, working_outlets, working_monitor)
           VALUES
-          (%s, %s, %s, %s, %s)
+          (%s, %s, %s, %s, %s, %s)
           '''
-  cur.execute(query,(room_id, reservation_id, noise_level, working_outlets, working_monitor))
-  cur.execute("select * from survey")
-  print(cur.fetchall())
+  cur.execute(query,(sruvey_id, room_id, reservation_id, noise_level, working_outlets, working_monitor))
   commitAndClose(cur,conn)
+
+def getRoomByID(cur, room_id):
+  cur.execute("Select * from room where room_id = '" + room_id + "'")
+  return cur.fetchall()
+
+def getUserByID(cur, user_id):
+  cur.execute("Select * from user_data where net_id = '" + user_id + "'")
+  return cur.fetchall()
+
+def getReservationByID(cur, reservation_id):
+  cur.execute("Select * from reservation where reservation_id = '" + reservation_id + "'")
+  return cur.fetchall()
+
+def getReservationByUserID(cur, user_id):
+  cur.execute("Select * from reservation where user_id = '" + user_id + "'")
+  return cur.fetchall()
+
+# def getSurveyByRoomID():
+# def getSurveyByID():

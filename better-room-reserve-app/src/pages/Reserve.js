@@ -279,10 +279,7 @@ export function Reserve(){
 
                     <div className="times"> 
                         <label>Available Times</label>
-                        
                         <img className='calendar' src={calendar}/>
-                        
-                        
                         <form onSubmit={handleSubmit}>
                             {generateButtonTimes("8:00 AM").map(time => (
                                 <button onClick={() => {toggle(time)}} 

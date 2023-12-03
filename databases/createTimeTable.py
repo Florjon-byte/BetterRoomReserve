@@ -10,14 +10,11 @@ conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
 cur = conn.cursor()
 
 query = '''
-        CREATE TABLE IF NOT EXISTS user_data 
-        (net_id VARCHAR(256) NOT NULL PRIMARY KEY,
-        email VARCHAR(256) NOT NULL,
-        password VARCHAR(256) NOT NULL,
-        individual_time INT DEFAULT 5,
-        group_time INT DEFAULT 3,
-        auth_token VARCHAR(256),
-        reservations UUID[] DEFAULT ARRAY[]::UUID[]);'''
+        CREATE TABLE timetable (
+        time_id UUID PRIMARY KEY,
+        date DATE,
+        time_key TIME,
+        reservation_id UUID references reservation(reservation_id));'''
 
 cur.execute(query)
 
