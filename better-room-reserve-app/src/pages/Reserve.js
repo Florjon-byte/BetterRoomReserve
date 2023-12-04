@@ -6,20 +6,18 @@ import "../cssfiles/reserve.css";
 import calendar from "../images/calendar.png";
 import forth from "../images/forthfloor.png";
 import third from "../images/thirdfloor.png";
+import { getToken, setToken } from "../token"
 
-function runSize(){
-    let filePath = "Rooms.csv"
-    let result = new Set() 
+/*
 
-    Papa.parse(filePath, {
-        complete: function(results) {
-        results.data.forEach(row => {
-            // process each row
-            console.log(row.data)
-        });
-        }
-    });
-}
+what darrien wants:
+    - calender setup 
+
+- set up endpoints to work with reserve page 
+- set up profile 
+
+
+*/
 
 export function Reserve(){
     const navigate = useNavigate()

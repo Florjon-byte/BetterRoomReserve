@@ -1,6 +1,8 @@
 import logo from '../images/bern-dibner-library.jpg';
 import { useNavigate } from 'react-router-dom';
 import '../cssfiles/App.css';
+import { getToken, setToken } from "../token"
+
 
 export function Home(){
   const navigate = useNavigate()
@@ -48,8 +50,8 @@ export function Home(){
       </div>
 
       <div className='button-group'>
-        <button className='nyubutton' href="/reserve">Reserve an Individual Room</button>
-        <button className='nyubutton' href="/reserve">Reserve a Large Room</button>
+        <button className='nyubutton' onClick={() => navigate("/reserve")}>Reserve an Individual Room</button>
+        <button className='nyubutton' onClick={() => navigate("/reserve")}>Reserve a Large Room</button>
       </div>
 
       {/* Second Div */}

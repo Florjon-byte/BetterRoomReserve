@@ -2,6 +2,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import React, { Component, useEffect, useState, Route } from "react"
 import { useNavigate } from 'react-router-dom'
 import axios from "axios"
+import { getToken, setToken } from "../token"
+
 
 export function Profile(){
     const navigate = useNavigate()

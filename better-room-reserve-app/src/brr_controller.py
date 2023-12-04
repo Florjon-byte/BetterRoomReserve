@@ -69,7 +69,15 @@ async def get_user_info(user: schemas.UserModel):
         cur, conn = db.openCursor()
         profile = db.getUserByID(cur, user.net_id)
         db.commitAndClose(cur, conn)
-        return profile
+        profile_json = {
+                            "net_id": profile[0][0],
+                            "email": profile[0][1],
+                            "individual_hours": profile[0][3],
+                            "group_hours": profile[0][4],
+                            "token": profile[0][5],
+                            "reservations": profile[0][6]
+                        }
+        return profile_json 
 
 @app.delete("/profile/cancel")
 def cancel_reservation(reservation_id: uuid.UUID):

@@ -1,9 +1,12 @@
 import { useState } from "react";
 import "../cssfiles/login.css";
+import { getToken, setToken } from "../token"
+import { useNavigate } from "react-router-dom";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,10 +28,17 @@ export function LoginPage() {
       });
       const data = await response.json();
       console.log(data);
+
+      if(data.token !== null){
+        setToken(data.token)
+        navigate("/")
+      }else{
+        console.log("User does not exist. Please try again.")
+      }
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
   return (
     <div class="login">
