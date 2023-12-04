@@ -7,7 +7,9 @@ class LogIn(BaseModel):
     password: str
 
 class UserModel(BaseModel):
-    net_id: str
+    net_id: Optional[str] = None
+    email: Optional[EmailStr] = None
+    auth_token: Optional[str] = None
 
 class Room(BaseModel):
     room_id: str
@@ -23,13 +25,4 @@ class Reservation(BaseModel):
     start_time: str
     end_time: str
     room_id: str
-    net_id: str
-
-class Survey(BaseModel):
-    user_id: str
-    room_id: str
-    reservation_id: uuid.UUID
-    noise_level: int
-    working_outlets: bool
-    working_monitor: bool
-    whiteboards: str
+    email: EmailStr

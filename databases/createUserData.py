@@ -11,12 +11,12 @@ cur = conn.cursor()
 
 query = '''
         CREATE TABLE IF NOT EXISTS user_data 
-        (net_id VARCHAR(256) NOT NULL PRIMARY KEY,
-        email VARCHAR(256) NOT NULL,
+        (net_id VARCHAR(256) NOT NULL,
+        email VARCHAR(256) NOT NULL PRIMARY KEY,
         password VARCHAR(256) NOT NULL,
         individual_time INT DEFAULT 5,
         group_time INT DEFAULT 3,
-        auth_token VARCHAR(256),
+        auth_token VARCHAR(256) UNIQUE,
         reservations UUID[] DEFAULT ARRAY[]::UUID[]);'''
 
 cur.execute(query)
