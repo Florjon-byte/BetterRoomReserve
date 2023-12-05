@@ -11,6 +11,11 @@ export function Home(){
     navigate("/login")
   }
 
+  const handleLogoutClick = () => {
+    setToken(null)
+    navigate("/")
+  }
+
   return(
       <div>
       {/* Navbar */}
@@ -30,9 +35,12 @@ export function Home(){
               </li>
             </ul>
           </div>
-          <button class="btn primary btn" onClick={handleLoginClick}>
+          {!getToken() && <button class="btn primary btn" onClick={handleLoginClick}>
             Login
-          </button>
+          </button>}
+          {getToken() && <button class="btn primary btn" onClick={handleLogoutClick}>
+            Logout
+          </button>}
         </div>
       </nav>
 

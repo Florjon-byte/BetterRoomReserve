@@ -60,6 +60,22 @@ export function Reserve(){
         }
     }
 
+    const getCurrentDate = () => {
+        const date = new Date().toISOString().split('T')[0]
+        return date
+    }
+
+    const getTwoMonthsAfter = () => { 
+        const today = new Date()
+        const two_months_later = new Date(
+            today.getFullYear(),
+            today.getMonth() + 2,
+            today.getDay()
+        )
+
+        return two_months_later.toISOString().split('T')[0]
+    }
+
     const findReservationTime = () => {
         selected.sort((a, b) => {
             const [startA] = a.split(' - '); 
@@ -124,6 +140,11 @@ export function Reserve(){
         navigate("/login")
     }
 
+    const handleLogoutClick = () => {
+        setToken(null)
+        navigate("/")
+      }
+
     // made to make buttons not defualt to refreshing the page without an href 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -131,6 +152,13 @@ export function Reserve(){
 
     const changeFloors = () => {
         setFloor(floor => floor === "3" ? "4" : "3");
+    }
+
+    // APIS GO HERE 
+    const handleFilter = async (event) => {
+        event.preventDefault()
+
+
     }
 
 
@@ -153,9 +181,12 @@ export function Reserve(){
                     </li>
                     </ul>
                 </div>
-                <button class="btn primary btn" onClick={handleLoginClick}>
+                {!getToken() && <button class="btn primary btn" onClick={handleLoginClick}>
                     Login
-                </button>
+                </button>}
+                {getToken() && <button class="btn primary btn" onClick={handleLogoutClick}>
+                    Logout
+                </button>}
                 </div>
             </nav>
 
@@ -164,7 +195,7 @@ export function Reserve(){
             {/* Filters */}
             <section class="filter">
                 <h3>Filters:</h3>
-                <form className='select' method='POST'>
+                <form className='select' onSubmit={handleFilter}>
                     <div className='size'>
                         <label>Size:</label>
                         <select className='dropdown'>
@@ -176,7 +207,8 @@ export function Reserve(){
                             ))}
                         </select>
                     </div>
-                    <div className='noise'>
+                    {/* Noise is being deprecated */}
+                    {/* <div className='noise'>
                         <label>Noise Level:</label>
                         <select className='dropdown'> 
                         <option selected=""></option>
@@ -186,6 +218,11 @@ export function Reserve(){
                                 </option>
                             ))}
                         </select>
+                    </div> */}
+                    <div className="dates">
+                        <label>Date:</label>
+                        <input className='dropdown' type='date' min={getCurrentDate()}
+                        max={getTwoMonthsAfter()}/>
                     </div>
                     <div className='times'>
                         <label>Time Start:</label>
@@ -275,7 +312,6 @@ export function Reserve(){
 
                     <div className="times"> 
                         <label>Available Times</label>
-                        <img className='calendar' src={calendar}/>
                         <form onSubmit={handleSubmit}>
                             {generateButtonTimes("8:00 AM").map(time => (
                                 <button onClick={() => {toggle(time)}} 

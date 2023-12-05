@@ -10,9 +10,6 @@ export function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
     try {
       const endpoint = "http://localhost:8000/login";
       const response = await fetch(endpoint, {

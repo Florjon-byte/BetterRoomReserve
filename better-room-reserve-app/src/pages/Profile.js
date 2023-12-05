@@ -11,6 +11,11 @@ export function Profile(){
     const handleLoginClick = () => { 
         navigate("/login")
     }
+
+    const handleLogoutClick = () => {
+        setToken(null)
+        navigate("/")
+    }
     
     return(
         <div> 
@@ -24,16 +29,19 @@ export function Profile(){
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/profile">Profile</a>
+                        <a class="nav-link" href="/reserve">Reserve</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/reserve">Reserve</a>
+                        <a class="nav-link" href="/profile">Profile</a>
                     </li>
                     </ul>
                 </div>
-                <button class="btn primary btn" onClick={handleLoginClick}>
+                {!getToken() && <button class="btn primary btn" onClick={handleLoginClick}>
                     Login
-                </button>
+                </button>}
+                {getToken() && <button class="btn primary btn" onClick={handleLogoutClick}>
+                    Logout
+                </button>}
                 </div>
             </nav>
 

@@ -49,7 +49,7 @@ async def login(login_info: schemas.LogIn):
     query = """
             UPDATE user_data
             SET auth_token = %s
-            WHERE net_id = %s;
+            WHERE email = %s;
             """
     cur.execute(query,(jwtoken, login_info.email))
     db.commitAndClose(cur, conn)
@@ -58,7 +58,7 @@ async def login(login_info: schemas.LogIn):
 @app.get("/logout")
 async def logout(user: schemas.UserModel):
     cur, conn = db.openCursor()
-    query = "UPDATE user_data SET auth_token = NULL WHERE net_id = '" + user.net_id + "';"
+    query = "UPDATE user_data SET auth_token = NULL WHERE email = '" + user.email + "';"
     cur.execute(query)
     db.commitAndClose(cur, conn)
     return { "logout" : True }
@@ -83,10 +83,24 @@ async def get_user_info(user: schemas.UserModel):
 def cancel_reservation(reservation_id: uuid.UUID):
     cur, conn = db.openCursor()
 
+@app.post("/profile")
+def get_user_by_token(user: schemas.UserModel):
+    cur, conn = db.openCursor()
+    response = db.getUserByToken(cur, user.auth_token)
+    db.commitAndClose(cur, conn)
+    response_json = {
+                        "net_id": response[0][0],
+                        "email": response[0][1],
+                        "individual_hours": response[0][3],
+                        "group_hours": response[0][4],
+                        "token": response[0][5],
+                        "reservations": response[0][6]
+                    }
+    return response_json
 
 @app.get("/reserve/filter")
 async def get_filtered_info(filters: schemas.Filters):
-    query = "SELECT room_id FROM room WHERE "
+    query = "SELECT room_id, floor FROM room WHERE "
 
     chain = 0
     if (filters.size):
@@ -106,26 +120,69 @@ async def get_filtered_info(filters: schemas.Filters):
     cur.execute(query)
     result = cur.fetchall()
     db.commitAndClose(cur, conn)
-    print(result)
-    return result
+    result_json = {}
+    for item in result:
+        result_json[item[0]] = item[1]
+    return result_json
 
 @app.get("/reserve/room-info")
 async def get_room_info(reservation: schemas.Reservation):
     reservation_info = reservation.dict()
     if reservation.room_id:
         cur, conn = db.openCursor()
-        room_info = db.getRoomByID(cur, reservation.room_id)
-        print(room_info)
+        room_info = db.getRoomByID(cur, reservation.room_id)[0]
         db.commitAndClose(cur, conn)
-        return room_info
+        room_info_json = {
+                            "room_id": room_info[0],
+                            "size": room_info[1],
+                            "building": room_info[3],
+                            "floor": room_info[4],
+                            "outlets": room_info[5],
+                            "monitor": room_info[6],
+                            "whiteboard": room_info[7],
+                            "reservations": room_info[8]
+                        }
+        return room_info_json
 
-@app.get("/reserve")
+@app.post("/reserve")
 async def reserve(reservation_info: schemas.Reservation):
-    date = reservation_info.date
-    start = reservation_info.start_time
-    end = reservation_info.end_time
-    room = reservation_info.room_id
-    user = reservation_info.net_id
+    if reservation_info:
+        date = reservation_info.date
+        cur, conn = db.openCursor()
+        cur.execute("select to_timestamp(%s, 'HH12:MI AM,PM')",(reservation_info.start_time))
+        start = reservation_info.start_time
+        end = reservation_info.end_time
+        print(start)
+        room = reservation_info.room_id
+        user = reservation_info.email
+        res_id = str(uuid.uuid4())
+
+        query = """
+                SELECT reservation_id
+                FROM reservation
+                WHERE date = %s AND start_time = %s AND end_time = %s AND room_id = %s;
+                """
+        cur.execute(query,(date,start,end,room))
+        room_check = cur.fetchall()
+
+        if (len(room_check) == 0):
+            query = """
+                    SELECT reservation_id
+                    FROM reservation
+                    WHERE date = %s AND start_time = %s AND end_time = %s AND email = %s;
+                    """
+            cur.execute(query,(date,start,end,user))
+            user_check = cur.fetchall()
+
+            if (len(user_check) == 0):
+                print("fucking gaming")
+                # db.createReservation(res_id, date, start, end, room, user)
+
+
+
+        return {"reservation" : True}
+    else:
+        return { "Error": "Reservation info missing" }
 
 # @app.get("/items/{item_id}")
 # def read_item(item_id: int, q: Union[str, None] = None):

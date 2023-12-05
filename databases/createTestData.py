@@ -31,34 +31,34 @@ with open("Rooms.csv") as file:
 
 reservation_insert_statements = [
     (
-        str(uuid.uuid4()), date(2023, 12, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314'
+        str(uuid.uuid4()), date(2023, 12, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), date(2023, 12, 2), time(14, 0), time(16, 0), 'LC416', 'fh999'
+        str(uuid.uuid4()), date(2023, 12, 2), time(14, 0), time(16, 0), 'LC416', 'fh999@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), date(2024, 1, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314'
+        str(uuid.uuid4()), date(2024, 1, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), date(2024, 1, 2), time(14, 0), time(16, 0), 'LC416', 'fh999'
+        str(uuid.uuid4()), date(2024, 1, 2), time(14, 0), time(16, 0), 'LC416', 'fh999@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), date(2024, 2, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314'
+        str(uuid.uuid4()), date(2024, 2, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), date(2024, 2, 2), time(14, 0), time(16, 0), 'LC416', 'fh999'
+        str(uuid.uuid4()), date(2024, 2, 2), time(14, 0), time(16, 0), 'LC416', 'fh999@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), date(2024, 3, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314'
+        str(uuid.uuid4()), date(2024, 3, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), date(2024, 3, 2), time(14, 0), time(16, 0), 'LC416', 'fh999'
+        str(uuid.uuid4()), date(2024, 3, 2), time(14, 0), time(16, 0), 'LC416', 'fh999@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), date(2024, 4, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314'
+        str(uuid.uuid4()), date(2024, 4, 1), time(10, 0), time(12, 0), 'LC417', 'dg3314@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), date(2024, 4, 2), time(14, 0), time(16, 0), 'LC416', 'fh999'
+        str(uuid.uuid4()), date(2024, 4, 2), time(14, 0), time(16, 0), 'LC416', 'fh999@nyu.edu'
     )
 ]
 
