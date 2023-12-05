@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List
 import uuid
 
 class LogIn(BaseModel):
@@ -22,7 +22,6 @@ class Filters(BaseModel):
 
 class Reservation(BaseModel):
     date: str
-    start_time: str
-    end_time: str
+    time: List[str]
     room_id: str
     email: EmailStr

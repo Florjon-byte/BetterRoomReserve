@@ -131,38 +131,52 @@ async def get_room_info(reservation: schemas.Reservation):
 @app.post("/reserve")
 async def reserve(reservation_info: schemas.Reservation):
     if reservation_info:
-        date = reservation_info.date
         cur, conn = db.openCursor()
-        cur.execute("select to_timestamp(%s, 'HH12:MI AM,PM')",(reservation_info.start_time))
-        start = cur.fetchall()
-        print(start)
-        end = to_timestamp(reservation_info.end_time, "HH12:MI AM,PM")
+
+        date = reservation_info.date
+        start = reservation_info.time[0]
+        end = reservation_info.time[len(reservation_info.time)-1]
+        times = reservation_info.time
         room = reservation_info.room_id
         user = reservation_info.email
         res_id = str(uuid.uuid4())
 
-        query = """
-                SELECT reservation_id
-                FROM reservation
-                WHERE date = %s AND start_time = %s AND end_time = %s AND room_id = %s;
-                """
-        cur.execute(query,(date,start,end,room))
-        room_check = cur.fetchall()
-
-        if (len(room_check) == 0):
+        for time in times:
             query = """
                     SELECT reservation_id
                     FROM reservation
-                    WHERE date = %s AND start_time = %s AND end_time = %s AND email = %s;
+                    WHERE date = %s AND (start_time = %s OR end_time = %s) AND room_id = %s;
                     """
-            cur.execute(query,(date,start,end,user))
+            cur.execute(query,(date,time,time,room))
+            room_check = cur.fetchall()
+            if (len(room_check) != 0):
+                return {"Error" : "Room Occupied at this time."}
+
+        for time in times:
+            query = """
+                    SELECT reservation_id
+                    FROM reservation
+                    WHERE date = %s AND (start_time = %s OR end_time = %s) AND email = %s;
+                    """
+            cur.execute(query,(date,time,time,user))
             user_check = cur.fetchall()
+            if (len(user_check) != 0):
+                return {"Error" : "User already has a reservation at this time elsewhere."}
 
-            if (len(user_check) == 0):
-                print("fucking gaming")
-                # db.createReservation(res_id, date, start, end, room, user)
+        db.createReservation(res_id, date, start, end, room, user)
+        user_update = """
+                      UPDATE user_data
+                      SET reservations = ARRAY_APPEND(reservations, %s)
+                      WHERE email = %s;
+                      """
 
-
+        room_update = """
+                      UPDATE room
+                      SET reservations = ARRAY_APPEND(reservations, %s)
+                      WHERE room_id = %s;
+                      """
+        cur.execute(user_update,(res_id, user))
+        cur.execute(room_update,(res_id, room))
 
         return {"reservation" : True}
     else:
