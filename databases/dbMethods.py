@@ -24,10 +24,6 @@ def commitAndClose(cur, conn):
 
 def createUser(net_id, email, password):
   cur, conn = openCursor()
-  try:
-    cur.execute("CREATE EXTENSION pgcrypto;")
-  except(psycopg2.errors.DuplicateObject):
-    pass
   query = '''
           INSERT INTO user_data 
           (net_id, email, password)

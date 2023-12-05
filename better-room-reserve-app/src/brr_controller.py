@@ -9,6 +9,7 @@ from typing import Union, List
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, EmailStr
 from fastapi.middleware.cors import CORSMiddleware
+from psycopg2.extras import register_uuid
 
 sys.path.append("../../databases")
 import dbMethods as db
@@ -64,11 +65,52 @@ async def logout(user: schemas.UserModel):
     return { "logout" : True }
 
 @app.delete("/profile/cancel")
-def cancel_reservation(reservation_id: uuid.UUID):
+async def cancel_reservation(cancel_info: schemas.Cancellation):
+
+    reservation_id = cancel_info.res_id
+
     cur, conn = db.openCursor()
+    result = db.getReservationByID(cur, str(reservation_id))
+
+    if (len(result) == 0):
+        return {"Error" : f"Reservation with id {reservation_id} does not exist"}
+
+    res_info = {
+                "reservation_id" : result[0][0],
+                "date" : result[0][1],
+                "start_time" : result[0][2],
+                "end_time" : result[0][3],
+                "room_id" : result[0][4],
+                "email" : result[0][5]
+                }
+
+    room = res_info["room_id"]
+    user = res_info["email"]
+
+    user_update = """
+                  UPDATE user_data
+                  SET reservations = ARRAY_REMOVE(reservations, %s)
+                  WHERE email = %s;
+                  """
+
+    room_update = """
+                  UPDATE room
+                  SET reservations = ARRAY_REMOVE(reservations, %s)
+                  WHERE room_id = %s;
+                  """
+    
+    reservation_delete = f"DELETE FROM reservation WHERE reservation_id = '{reservation_id}';"
+
+    register_uuid()
+    cur.execute(user_update,(str(reservation_id), user))
+    cur.execute(room_update,(str(reservation_id), room))
+    cur.execute(reservation_delete)
+
+    return {"reservation" : "removed"}
+
 
 @app.post("/profile")
-def get_user_by_token(user: schemas.UserModel):
+async def get_user_by_token(user: schemas.UserModel):
     cur, conn = db.openCursor()
     response = db.getUserByToken(cur, user.auth_token)
     db.commitAndClose(cur, conn)
@@ -178,7 +220,7 @@ async def reserve(reservation_info: schemas.Reservation):
         cur.execute(user_update,(res_id, user))
         cur.execute(room_update,(res_id, room))
 
-        return {"reservation" : True}
+        return {"reservation_id" : res_id}
     else:
         return { "Error": "Reservation info missing" }
 
