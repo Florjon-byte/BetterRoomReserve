@@ -17,7 +17,7 @@ class Room(BaseModel):
 
 class Filters(BaseModel):
   size: Optional[int] = None
-  noise_level: Optional[str] = None
+  date: Optional[str] = None
   start_time: Optional[str] = None
 
 class Reservation(BaseModel):
@@ -26,5 +26,10 @@ class Reservation(BaseModel):
   room_id: str
   email: EmailStr
 
-class Cancellation(BaseModel):
+class Room(BaseModel):
+  room_id: str
+  date: Optional[str] = None
+  time: Optional[str] = None
+
+class ReservationInfo(BaseModel):
   res_id: uuid.UUID

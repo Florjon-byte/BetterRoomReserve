@@ -59,18 +59,38 @@ async def login(login_info: schemas.LogIn):
 @app.get("/logout")
 async def logout(user: schemas.UserModel):
     cur, conn = db.openCursor()
-    query = "UPDATE user_data SET auth_token = NULL WHERE email = '" + user.email + "';"
+    query = f"UPDATE user_data SET auth_token = NULL WHERE email = '{user.email}';"
     cur.execute(query)
     db.commitAndClose(cur, conn)
     return { "logout" : True }
 
-@app.delete("/profile/cancel")
-async def cancel_reservation(cancel_info: schemas.Cancellation):
+@app.post("/profile/get-reservation")
+async def get_reservation(request: schemas.UserModel):
+    cur, conn = db.openCursor()
+    result = db.getReservationByUserEmail(cur, request.email)
 
-    reservation_id = cancel_info.res_id
+    response = {}
+    for res_id in result:
+        reservation = db.getReservationByID(cur, res_id)
+
+        response[reservation[0][0]] = {
+                    "date" : reservation[0][1],
+                    "start_time" : reservation[0][2],
+                    "end_time" : reservation[0][3],
+                    "room_id" : reservation[0][4],
+                    }
+   
+    db.commitAndClose(cur, conn)
+
+    return response
+
+@app.delete("/profile/cancel")
+async def cancel_reservation(res_info: schemas.ReservationInfo):
+
+    reservation_id = res_info.res_id
 
     cur, conn = db.openCursor()
-    result = db.getReservationByID(cur, str(reservation_id))
+    result = db.getReservationByID(cur, reservation_id)
 
     if (len(result) == 0):
         return {"Error" : f"Reservation with id {reservation_id} does not exist"}
@@ -106,6 +126,8 @@ async def cancel_reservation(cancel_info: schemas.Cancellation):
     cur.execute(room_update,(str(reservation_id), room))
     cur.execute(reservation_delete)
 
+    db.commitAndClose(cur, conn)
+
     return {"reservation" : "removed"}
 
 
@@ -114,61 +136,125 @@ async def get_user_by_token(user: schemas.UserModel):
     cur, conn = db.openCursor()
     response = db.getUserByToken(cur, user.auth_token)
     db.commitAndClose(cur, conn)
+    reservations = response[0][6].replace('{','').replace('}','').split(',')
     response_json = {
                         "net_id": response[0][0],
                         "email": response[0][1],
                         "individual_hours": response[0][3],
                         "group_hours": response[0][4],
                         "token": response[0][5],
-                        "reservations": response[0][6]
+                        "reservations": reservations
                     }
     return response_json
 
 @app.get("/reserve/filter")
 async def get_filtered_info(filters: schemas.Filters):
-    query = "SELECT room_id, floor FROM room WHERE "
 
-    chain = 0
+    room_query = "SELECT room_id, floor FROM room"
+
     if (filters.size):
-        query += "max_occupancy = " + str(filters.size)
-        chain = 1
-    if (filters.noise_level):
-        if (chain > 0):
-            query += " AND "
-        query += "noise_level = '" + filters.noise_level + "'"
-    if (filters.start_time):
-        if (chain > 0):
-            query += " AND "
-        query += "start_time = "+ filters.start_time
-        chian = 0
-
+        room_query += f" WHERE max_occupancy = {filters.size}"
+    
     cur, conn = db.openCursor()
-    cur.execute(query)
-    result = cur.fetchall()
-    db.commitAndClose(cur, conn)
+    cur.execute(room_query)
+    room_result = cur.fetchall()
+
     result_json = {}
-    for item in result:
+    for item in room_result:
         result_json[item[0]] = item[1]
+
+    room_times = {}
+
+    if (filters.date):
+        for item in room_result:
+            room_info = db.getRoomByID(cur, item[0])[0]
+            reservations = room_info[7].replace('{','').replace('}','').split(',')
+            hours = generate_operational_hours()
+            if ((reservations[0] != '') and (len(reservations) != 1)):
+                for res_id in reservations:
+                    reservation_query = f"SELECT start_time, end_time, date FROM reservation where reservation_id = '{res_id}';"
+                    cur.execute(reservation_query)
+                    reservation_results = cur.fetchall()[0]
+                    if (len(reservation_results) > 0):
+                        date = reservation_results[2].strftime("%Y-%m-%d")
+                        if (date == filters.date):
+                            start = reservation_results[0].strftime("%H:%M:%S")
+                            end = reservation_results[1].strftime("%H:%M:%S")
+                            try:
+                                start_index = hours.index(start)
+                                end_index = hours.index(end)
+                                if ((start_index != -1) and (end_index != -1)):
+                                    for index in range(start_index, end_index):
+                                        hours[index] = None
+                            except(ValueError):
+                                continue
+                room_times[item[0]] = clean_arr(hours)
+            else:
+                room_times[item[0]] = generate_operational_hours()
+
+    if (filters.start_time):
+        for room in room_result:
+            if (filters.start_time+":00" not in room_times[room[0]]):
+                del room_times[room[0]]
+                del result_json[room[0]]
+
+    db.commitAndClose(cur, conn)
+
     return result_json
 
-@app.get("/reserve/room-info")
-async def get_room_info(reservation: schemas.Reservation):
-    reservation_info = reservation.dict()
-    if reservation.room_id:
+@app.post("/reserve/room-info")
+async def get_room_info(room: schemas.Room):
+    if room.room_id:
         cur, conn = db.openCursor()
-        room_info = db.getRoomByID(cur, reservation.room_id)[0]
+        room_info = db.getRoomByID(cur, room.room_id)[0]
         db.commitAndClose(cur, conn)
+
+        reservations = room_info[7].replace('{','').replace('}','').split(',')
         room_info_json = {
                             "room_id": room_info[0],
                             "size": room_info[1],
-                            "building": room_info[3],
-                            "floor": room_info[4],
-                            "outlets": room_info[5],
-                            "monitor": room_info[6],
-                            "whiteboard": room_info[7],
-                            "reservations": room_info[8]
+                            "building": room_info[2],
+                            "floor": room_info[3],
+                            "outlets": room_info[4],
+                            "monitor": room_info[5],
+                            "whiteboard": room_info[6],
+                            "reservations": reservations
                         }
         return room_info_json
+
+@app.post("/reserve/room-time")
+async def get_time_info(room: schemas.Room):
+    cur, conn = db.openCursor()
+    room_info = db.getRoomByID(cur, room.room_id)[0]
+    room_hours = generate_operational_hours()
+
+    remove_end = room_hours.index(room.time+":00")
+    
+    for index in range(0, remove_end):
+        room_hours[index] = None
+
+    reservations = room_info[7].replace('{','').replace('}','').split(',')
+    for res_id in reservations:
+        cur.execute(f"SELECT start_time, end_time, date FROM reservation WHERE reservation_id = '{res_id}'")
+        booked_times = cur.fetchall()[0]
+        date = booked_times[2].strftime("%Y-%m-%d")
+        if (date == room.date):
+            start = booked_times[0].strftime("%H:%M:%S")
+            end = booked_times[1].strftime("%H:%M:%S")
+            try:
+                start_index = room_hours.index(start)
+                end_index = room_hours.index(end)
+                if ((start_index != -1) and (end_index != -1)):
+                    for index in range(start_index, end_index):
+                        room_hours[index] = None
+            except(ValueError):
+                continue
+
+    db.commitAndClose(cur, conn)
+
+    return {"Room Hours" : clean_arr(room_hours)}
+
+
 
 @app.post("/reserve")
 async def reserve(reservation_info: schemas.Reservation):
@@ -219,12 +305,32 @@ async def reserve(reservation_info: schemas.Reservation):
                       """
         cur.execute(user_update,(res_id, user))
         cur.execute(room_update,(res_id, room))
+        db.commitAndClose(cur, conn)
 
         return {"reservation_id" : res_id}
     else:
+        db.commitAndClose(cur, conn)
         return { "Error": "Reservation info missing" }
 
-# @app.get("/items/{item_id}")
-# def read_item(item_id: int, q: Union[str, None] = None):
-#     return {"item_id": item_id, "q": q}
+def clean_arr(arr):
+    i = 0
+    while (not(i >= len(arr)) and (len(arr) != 0)):
+        if (arr[i] is None):
+            arr.pop(i)
+        else:
+            i += 1
+    return arr
 
+def generate_operational_hours():
+    operational_hours = []
+
+    start_time = datetime.datetime.strptime("08:00:00", "%H:%M:%S")
+    end_time = datetime.datetime.strptime("20:00:00", "%H:%M:%S")
+    time_increment = datetime.timedelta(minutes=30)
+
+    current_time = start_time
+    while current_time <= end_time:
+        operational_hours.append(current_time.strftime("%H:%M:%S"))
+        current_time += time_increment
+    
+    return operational_hours
