@@ -89,7 +89,6 @@ export function LoginPage() {
               required
               onChange={(e) => {
                 setPassword(e.target.value);
-                console.log(password);
               }}
             />
 

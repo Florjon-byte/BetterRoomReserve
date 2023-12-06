@@ -30,26 +30,8 @@ export function Reserve(){
         return ["00", "30"].map(min => `${hour}:${min} ${ampm}`);
     })
 
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
-
-    const generateButtonTimes = (start_time = "8:00 AM") => {
-        const button_times = []
-        const i = times.findIndex((start) => start === start_time)
-        for(let index = i; index < times.length - 2; index++){
-            button_times.push(`${times[index]} - ${times[index+1]}`)
-        }
-
-        return button_times
-    }
-
-    const createTimeButtons = (start_time = "8:00 AM") => {
-        return ( generateButtonTimes(start_time).map(time => (
-            <button className='timebuttons'>{time}</button>
-        )) )
-    }
-
+    // 
+    const [selectedSize, setSelectedSize] = useState(5)
     const [selected, setSelected] = useState([]);
 
     const toggle = (time) => {
@@ -65,6 +47,9 @@ export function Reserve(){
         return date
     }
 
+    const [selectedDate, setSelectedDate] = useState(getCurrentDate())
+
+
     const getTwoMonthsAfter = () => { 
         const today = new Date()
         const two_months_later = new Date(
@@ -74,6 +59,24 @@ export function Reserve(){
         )
 
         return two_months_later.toISOString().split('T')[0]
+    }
+
+    const getCurrentTime = (type) => {
+        const date = new Date()
+        const coeff = 1000 * 60 * 30
+        return new Date(Math.round(date.getTime() / coeff) * coeff).toLocaleTimeString(type, {hour: '2-digit', minute:'2-digit'});
+    }
+
+    const [selectedStartTime, setSelectedStartTime] = useState(getCurrentTime("en-GB"))
+
+    const generateButtonTimes = (start_time = "8:00 AM") => {
+        const button_times = []
+        const i = times.findIndex((start) => start === start_time)
+        for(let index = i; index < times.length - 2; index++){
+            if(index === -1){ break }
+            button_times.push(`${times[index]} - ${times[index+1]}`)
+        }
+        return button_times
     }
 
     const findReservationTime = () => {
@@ -154,11 +157,39 @@ export function Reserve(){
         setFloor(floor => floor === "3" ? "4" : "3");
     }
 
+    const whatRoomsInFilter = () => { 
+
+    }
+
+    const handleAreaClick = (event) => {
+        event.preventDefault()
+        console.log(document.activeElement.id)
+    }
+    
+
     // APIS GO HERE 
     const handleFilter = async (event) => {
         event.preventDefault()
+        try {
+            const endpoint = "localhost:8000/reserve/filter"
+            const response = fetch(endpoint, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify({
+                  size: selectedSize,
+                  date: setSelectedDate,
+                  start_time: selectedStartTime // 24 hour format 
+                }),
+        });
+        const data = await response.json();
+        console.log(data);
 
-
+        } catch (error) {
+            console.log("oh shit something went wrong")
+        }
     }
 
 
@@ -198,7 +229,9 @@ export function Reserve(){
                 <form className='select' onSubmit={handleFilter}>
                     <div className='size'>
                         <label>Size:</label>
-                        <select className='dropdown'>
+                        <select className='dropdown' onChange={(event) =>{
+                            setSelectedSize(parseInt(event.target.value[event.target.value.length - 2]))
+                        }}>
                         <option selected=""></option>
                             {size.map(option => (
                                 <option key={option} value={option}>
@@ -222,11 +255,15 @@ export function Reserve(){
                     <div className="dates">
                         <label>Date:</label>
                         <input className='dropdown' type='date' min={getCurrentDate()}
-                        max={getTwoMonthsAfter()}/>
+                        max={getTwoMonthsAfter()} onChange={(event) => {
+                            setSelectedDate(event.target.value)
+                        }}/>
                     </div>
                     <div className='times'>
                         <label>Time Start:</label>
-                        <select className='dropdown'>
+                        <select className='dropdown' onChange={(event) => { 
+                            setSelectedStartTime(event.target.value)
+                        }} >
                             <option selected=""></option>
                             {times.map(option => (
                                 <option key={option} value={option}>
@@ -251,27 +288,27 @@ export function Reserve(){
                         onClick={() => changeFloors()}> ▼ </button>
                     </div>
                     <div className='floormap'>
-                        <lable> Floor: {floor}</lable>
+                        <label> Floor: {floor}</label>
                         {floor === "3" &&
                         <div className='thirdfloor'> 
                             <img className='thirdFloorMap' src={third} width="750" height="530"
                             usemap="#thirdFloor"/>
                             <map name="thirdFloor">
-                                <area shape="rect" alt="hello" coords="317,277,354,315" href="#" />
-                                <area shape="rect" coords="316,315,353,353" href="#" />
-                                <area shape="rect" coords="355,315,391,355" href="#" />
-                                <area shape="rect" coords="355,276,391,314" href="#" />
-                                <area shape="rect" coords="619,212,651,245" href="#" />
-                                <area shape="rect" coords="551,210,583,245" href="#" />
-                                <area shape="rect" coords="585,211,617,246" href="#" />
-                                <area shape="rect" coords="550,277,583,312" href="#" />
-                                <area shape="rect" coords="585,277,617,312" href="#" />
-                                <area shape="rect" coords="617,277,648,311" href="#" />
-                                <area shape="rect" coords="550,315,583,349" href="#" />
-                                <area shape="rect" coords="586,315,615,349" href="#" />
-                                <area shape="rect" coords="618,315,649,358" href="#" />
-                                <area shape="rect" coords="213,377,249,416" href="#" />
-                                <area shape="rect" coords="252,378,288,416" href="#" />
+                                <area shape="rect" alt="hello" coords="317,277,354,315" href="" />
+                                <area shape="rect" coords="316,315,353,353" href="" />
+                                <area shape="rect" coords="355,315,391,355" href="" />
+                                <area shape="rect" coords="355,276,391,314" href="" />
+                                <area shape="rect" coords="619,212,651,245" href="" />
+                                <area shape="rect" coords="551,210,583,245" href="" />
+                                <area shape="rect" coords="585,211,617,246" href="" />
+                                <area shape="rect" coords="550,277,583,312" href="" />
+                                <area shape="rect" coords="585,277,617,312" href="" />
+                                <area shape="rect" coords="617,277,648,311" href="" />
+                                <area shape="rect" coords="550,315,583,349" href="" />
+                                <area shape="rect" coords="586,315,615,349" href="" />
+                                <area shape="rect" coords="618,315,649,358" href="" />
+                                <area shape="rect" coords="213,377,249,416" href="" />
+                                <area shape="rect" coords="252,378,288,416" href="" />
                             </map>
                         </div>}
 
@@ -280,32 +317,32 @@ export function Reserve(){
                             <img className='forth' src={forth} width="750" height="560" 
                             usemap="#forthFloor"></img>
                             <map name="forthFloor">
-                                <area shape="rect" coords="229,13,292,49"   href="#" />
-                                <area shape="rect" coords="230,53,292,86"   href="#" />
-                                <area shape="rect" coords="230,88,293,122"  href="#" />
-                                <area shape="rect" coords="229,126,292,176" href="#" />
-                                <area shape="rect" coords="347,306,367,325" href="#" />
-                                <area shape="rect" coords="369,305,387,323" href="#" />
-                                <area shape="rect" coords="390,307,407,324" href="#" />
-                                <area shape="rect" coords="348,328,366,345" href="#" />
-                                <area shape="rect" coords="369,329,387,345" href="#" />
-                                <area shape="rect" coords="390,328,407,345" href="#" />
-                                <area shape="rect" coords="348,348,367,364" href="#" />
-                                <area shape="rect" coords="389,348,407,364" href="#" />
-                                <area shape="rect" coords="444,329,480,363" href="#" />
-                                <area shape="rect" coords="483,331,519,363" href="#" />
-                                <area shape="rect" coords="552,307,570,324" href="#" />
-                                <area shape="rect" coords="573,307,592,324" href="#" />
-                                <area shape="rect" coords="593,307,611,324" href="#" />
-                                <area shape="rect" coords="614,306,631,324" href="#" />
-                                <area shape="rect" coords="634,306,653,323" href="#" />
-                                <area shape="rect" coords="552,327,570,344" href="#" />
-                                <area shape="rect" coords="574,328,589,343" href="#" />
-                                <area shape="rect" coords="595,327,610,342" href="#" />
-                                <area shape="rect" coords="615,328,631,344" href="#" />
-                                <area shape="rect" coords="634,327,653,344" href="#" />
-                                <area shape="rect" coords="553,348,570,366" href="#" />
-                                <area shape="rect" coords="634,348,652,364" href="#" />
+                                <area shape="rect" coords="229,13,292,49" id='LC445' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="230,53,292,86" id='LC445A'  href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="230,88,293,122" id="LC445B"  href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="229,126,292,176" id='LC445C' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="347,306,367,325" id='LC416' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="369,305,387,323" id='LC417' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="390,307,407,324" id='LC418' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="348,328,366,345" id='LC430' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="369,329,387,345" id='LC437' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="390,328,407,345" id='LC435' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="348,348,367,364" id='LC438' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="389,348,407,364" id='LC436' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="444,329,480,363" id='LC434' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="483,331,519,363" id='LC432' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="552,307,570,324" id='LC419' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="573,307,592,324" id='LC420' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="593,307,611,324" id='LC421' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="614,306,631,324" id='LC422' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="634,306,653,323" id='LC423' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="552,327,570,344" id='LC431' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="574,328,589,343" id='LC429' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="595,327,610,342" id='LC428' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="615,328,631,344" id='LC427' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="634,327,653,344" id='LC425' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="553,348,570,366" id='LC430' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="634,348,652,364" id='LC426' href="" onClick={(event) => {handleAreaClick(event)}}/>
                             </map>
                         </div>}
                     </div>
@@ -313,7 +350,7 @@ export function Reserve(){
                     <div className="times"> 
                         <label>Available Times</label>
                         <form onSubmit={handleSubmit}>
-                            {generateButtonTimes("8:00 AM").map(time => (
+                            {generateButtonTimes().map(time => (
                                 <button onClick={() => {toggle(time)}} 
                                 className={selected.includes(time) ? "selected" : "timebuttons"}
                                 >{time}
