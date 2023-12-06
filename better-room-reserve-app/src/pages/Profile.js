@@ -2,7 +2,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import React, { Component, useEffect, useState, Route } from "react"
 import { useNavigate } from 'react-router-dom'
 import axios from "axios"
-import { getToken, setToken } from "../token"
 
 
 export function Profile(){
@@ -13,7 +12,7 @@ export function Profile(){
     }
 
     const handleLogoutClick = () => {
-        setToken(null)
+        localStorage.clear()
         navigate("/")
     }
     
@@ -36,10 +35,10 @@ export function Profile(){
                     </li>
                     </ul>
                 </div>
-                {!getToken() && <button class="btn primary btn" onClick={handleLoginClick}>
+                {!localStorage.getItem("token") && <button class="btn primary btn" onClick={handleLoginClick}>
                     Login
                 </button>}
-                {getToken() && <button class="btn primary btn" onClick={handleLogoutClick}>
+                {localStorage.getItem("token") && <button class="btn primary btn" onClick={handleLogoutClick}>
                     Logout
                 </button>}
                 </div>
