@@ -140,6 +140,9 @@
     justify-content: center;
 }
 
+area:focus {
+    outline: 2px solid red; 
+}
 
 
 
