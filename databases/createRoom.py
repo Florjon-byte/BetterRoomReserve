@@ -13,7 +13,6 @@ query = '''
         CREATE TABLE IF NOT EXISTS room 
         (room_id VARCHAR(256) NOT NULL PRIMARY KEY,
         max_occupancy INT NOT NULL,
-        noise_level VARCHAR(256),
         building VARCHAR(256) NOT NULL,
         floor VARCHAR(3) NOT NULL,
         outlets BOOL NOT NULL,

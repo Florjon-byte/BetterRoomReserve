@@ -24,10 +24,6 @@ def commitAndClose(cur, conn):
 
 def createUser(net_id, email, password):
   cur, conn = openCursor()
-  try:
-    cur.execute("CREATE EXTENSION pgcrypto;")
-  except(psycopg2.errors.DuplicateObject):
-    pass
   query = '''
           INSERT INTO user_data 
           (net_id, email, password)
@@ -37,15 +33,15 @@ def createUser(net_id, email, password):
   cur.execute(query,(net_id, email, password))
   commitAndClose(cur,conn)
 
-def createRoom(room_id, max_occupancy, noise_level, building, floor, outlets, monitor, whiteboard):
+def createRoom(room_id, max_occupancy, building, floor, outlets, monitor, whiteboard):
   cur, conn = openCursor();
   query = '''
           INSERT INTO room
-          (room_id, max_occupancy, noise_level, building, floor, outlets, monitor, whiteboard)
+          (room_id, max_occupancy, building, floor, outlets, monitor, whiteboard)
           VALUES
-          (%s,%s,%s,%s,%s,%s,%s,%s)
+          (%s,%s,%s,%s,%s,%s,%s)
           '''
-  cur.execute(query,(room_id, max_occupancy, noise_level, building, floor, outlets, monitor, whiteboard))
+  cur.execute(query,(room_id, max_occupancy, building, floor, outlets, monitor, whiteboard))
   commitAndClose(cur,conn)
 
 def createReservation(res_id, date, start_time, end_time, room_id, email):
@@ -61,25 +57,26 @@ def createReservation(res_id, date, start_time, end_time, room_id, email):
   commitAndClose(cur,conn)
 
 def getRoomByID(cur, room_id):
-  cur.execute("Select * from room where room_id = '" + room_id + "'")
+  cur.execute(f"Select * from room where room_id = '{room_id}'")
   return cur.fetchall()
 
 def getUserByID(cur, user_id):
-  cur.execute("Select * from user_data where net_id = '" + user_id + "'")
+  cur.execute(f"Select * from user_data where net_id = '{user_id}'")
   return cur.fetchall()
 
 def getUserByToken(cur, auth_token):
-  cur.execute("Select * from user_data where auth_token = '" + auth_token + "'")
+  cur.execute(f"Select * from user_data where auth_token = '{auth_token}'")
   return cur.fetchall()
 
 def getUserByEmail(cur, user_email):
-  cur.execute("Select * from user_data where email = '" + user_email + "'")
+  cur.execute(f"Select * from user_data where email = '{user_email}'")
   return cur.fetchall()
 
 def getReservationByID(cur, reservation_id):
-  cur.execute("Select * from reservation where reservation_id = '" + reservation_id + "'")
+  cur.execute(f"Select * from reservation where reservation_id = '{reservation_id}'")
   return cur.fetchall()
 
-def getReservationByUserID(cur, user_id):
-  cur.execute("Select * from reservation where user_id = '" + user_id + "'")
-  return cur.fetchall()
+def getReservationByUserEmail(cur, user_email):
+  cur.execute(f"Select reservations from user_data where email = '{user_email}'")
+  reservations = cur.fetchall()
+  return reservations[0][0].replace('{','').replace('}','').split(',')
