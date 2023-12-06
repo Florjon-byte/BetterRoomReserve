@@ -1,7 +1,6 @@
 import logo from '../images/bern-dibner-library.jpg';
 import { useNavigate } from 'react-router-dom';
 import '../cssfiles/App.css';
-import { getToken, setToken } from "../token"
 
 
 export function Home(){
@@ -12,7 +11,7 @@ export function Home(){
   }
 
   const handleLogoutClick = () => {
-    setToken(null)
+    localStorage.clear()
     navigate("/")
   }
 
@@ -35,10 +34,10 @@ export function Home(){
               </li>
             </ul>
           </div>
-          {!getToken() && <button class="btn primary btn" onClick={handleLoginClick}>
+          {!localStorage.getItem("token") && <button class="btn primary btn" onClick={handleLoginClick}>
             Login
           </button>}
-          {getToken() && <button class="btn primary btn" onClick={handleLogoutClick}>
+          {localStorage.getItem("token") && <button class="btn primary btn" onClick={handleLogoutClick}>
             Logout
           </button>}
         </div>

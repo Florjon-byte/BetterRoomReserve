@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "../cssfiles/login.css";
-import { getToken, setToken } from "../token"
 import { useNavigate } from "react-router-dom";
 
 export function LoginPage() {
@@ -25,9 +24,10 @@ export function LoginPage() {
       });
       const data = await response.json();
       console.log(data);
-
-      if(data.token !== null){
-        setToken(data.token)
+      console.log(data.detail)
+      
+      if(!data.detail){
+        localStorage.setItem("token", data.token)
         navigate("/")
       }else{
         console.log("User does not exist. Please try again.")
@@ -89,6 +89,7 @@ export function LoginPage() {
               required
               onChange={(e) => {
                 setPassword(e.target.value);
+                
               }}
             />
 
