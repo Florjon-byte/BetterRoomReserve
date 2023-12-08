@@ -73,10 +73,10 @@ def getUserByEmail(cur, user_email):
   return cur.fetchall()
 
 def getReservationByID(cur, reservation_id):
-  cur.execute(f"Select * from reservation where reservation_id = '{reservation_id}'")
+  cur.execute(f"Select * from reservation NATURAL JOIN room where reservation_id = '{reservation_id}' order by date, start_time asc")
   return cur.fetchall()
 
 def getReservationByUserEmail(cur, user_email):
-  cur.execute(f"Select reservations from user_data where email = '{user_email}'")
+  cur.execute(f"Select reservations from user_data where email = '{user_email}';")
   reservations = cur.fetchall()
-  return reservations[0][0].replace('{','').replace('}','').split(',')
+  return reservations[0][0] if isinstance(reservations[0][0], list) else reservations[0][0].replace('{','').replace('}','').split(',')
