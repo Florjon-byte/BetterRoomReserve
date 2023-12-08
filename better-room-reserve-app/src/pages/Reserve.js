@@ -28,10 +28,13 @@ export function Reserve(){
         hour = hour % 12 || 12; 
         return ["00", "30"].map(min => `${hour}:${min} ${ampm}`);
     })
+    const generated_button_times = times.slice(0, -2)
 
     // 
     const [selectedSize, setSelectedSize] = useState(5)
     const [selected, setSelected] = useState([]);
+    const [filters, setFilters] = useState(false)
+    const [timesShown, setTimeShown] = useState(false)
 
     const toggle = (time) => {
         if(selected.includes(time)) {
@@ -155,28 +158,16 @@ export function Reserve(){
     const changeFloors = () => {
         setFloor(floor => floor === "3" ? "4" : "3");
     }
-
-    const whatRoomsInFilter = () => { 
-
-    }
-
-    const [roomId, setRoomId] = useState()
-
-    const handleAreaClick = (event) => {
-        if(!localStorage.getItem("token")) { }
-
-        event.preventDefault()
-        setRoomId(document.activeElement.id)
-
-    }
     
+    const [listOfRooms, setListOfRooms] = useState([[],[]])
 
     // APIS GO HERE 
+    const [ObjOfRooms, setObjOfRooms] = useState({}) 
     const handleFilter = async (event) => {
         event.preventDefault()
         try {
-            const endpoint = "localhost:8000/reserve/filter"
-            const response = fetch(endpoint, {
+            const endpoint = "http://localhost:8000/reserve/filter"
+            const response = await fetch(endpoint, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -184,18 +175,58 @@ export function Reserve(){
                 },
                 body: JSON.stringify({
                   size: selectedSize,
-                  date: setSelectedDate,
+                  date: selectedDate,
                   start_time: selectedStartTime // 24 hour format 
                 }),
-        });
-        const data = await response.json();
-        console.log(data);
+            });
+            const data = await response.json();
+            setObjOfRooms(data)
 
         } catch (error) {
-            console.log("oh shit something went wrong")
+            console.log(error)
         }
+
+        // console.log(listOfRooms)
+        let thirdfloor = []
+        let forthfloor = [] 
+        let list_of_rooms = Object.entries(ObjOfRooms)
+        for(let index = 0; index < list_of_rooms.length; index++){
+            if(list_of_rooms[index][1] === "3") { thirdfloor.push(list_of_rooms[index][0])}
+            else{ forthfloor.push(list_of_rooms[index][0])}
+        }
+
+        setListOfRooms([thirdfloor, forthfloor])
+        if(listOfRooms[0].length >= 1 || listOfRooms[1].length >= 1){ setFilters(true) }
+
     }
 
+    const [roomId, setRoomId] = useState()
+
+    const handleAreaClick = async (event) => {
+        event.preventDefault()
+        if(!localStorage.getItem("token")) { navigate("/login") }
+        setRoomId(document.activeElement.id)
+        try{ 
+            const endpoint = "http://localhost:8000/reserve/room-time"
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify({
+                    room_id: roomId,
+                })
+            })
+            const data = await response.json();
+            console.log(data)
+
+        } catch (error) {
+            console.log(error)
+        }
+        setTimeShown(true)
+
+    }
 
     return (
         <div> 
@@ -266,20 +297,50 @@ export function Reserve(){
                     <div className='times'>
                         <label>Time Start:</label>
                         <select className='dropdown' onChange={(event) => { 
-                            setSelectedStartTime(event.target.value)
-                        }} >
+                            if(event.target.value.slice(0,-6) !== 12 && event.target.value.slice(-2) === "PM"){ 
+                                let hour = parseInt(event.target.value.slice(0,-6)) + 12
+                                let mins = event.target.value.slice(-6,-4) 
+                                setSelectedStartTime(`${hour}:${mins}`)
+                            } else {
+                                if(event.target.value.slice(0,-6) < 10){
+                                    setSelectedStartTime("0" + event.target.value.slice(0,-3))
+                                    console.log("0" + event.target.value.slice(0,-3))
+                                }else{
+                                    setSelectedStartTime(event.target.value.slice(0,-3))
+                                }
+                            }
+                        }}>
                             <option selected=""></option>
-                            {times.map(option => (
+                            {generated_button_times.map(option => (
                                 <option key={option} value={option}>
                                     {option}
                                 </option>
-                            ))}
+                            ))
+                            }
                         </select>
                     </div>
 
                     <button type='submit' className='coolButton'> Apply </button>
                 </form>
             </section>
+
+            {/* Filter Output */}
+            {filters && <section className="filteroutput"> 
+                <label> Floor 3 Rooms: </label>
+                <div className='thirdfloor'>
+                    {console.log(listOfRooms)}
+                    {listOfRooms[0].map(room => (
+                        <button aria-disabled>{room}</button>
+                    ))}
+                </div>
+                
+                <label style={{marginTop: "2%"}}> Floor 4 Rooms: </label>
+                <div className='forthfloor'> 
+                    {listOfRooms[1].map(room => (
+                        <button aria-disabled>{room}</button>
+                    ))}  
+                </div>
+            </section>}
 
             {/* Floor Map */}   
             <section className="reservation">

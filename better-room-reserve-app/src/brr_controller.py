@@ -147,7 +147,7 @@ async def get_user_by_token(user: schemas.UserModel):
                     }
     return response_json
 
-@app.get("/reserve/filter")
+@app.post("/reserve/filter")
 async def get_filtered_info(filters: schemas.Filters):
 
     room_query = "SELECT room_id, floor FROM room"
@@ -235,20 +235,21 @@ async def get_time_info(room: schemas.Room):
 
     reservations = room_info[7].replace('{','').replace('}','').split(',')
     for res_id in reservations:
-        cur.execute(f"SELECT start_time, end_time, date FROM reservation WHERE reservation_id = '{res_id}'")
-        booked_times = cur.fetchall()[0]
-        date = booked_times[2].strftime("%Y-%m-%d")
-        if (date == room.date):
-            start = booked_times[0].strftime("%H:%M:%S")
-            end = booked_times[1].strftime("%H:%M:%S")
-            try:
-                start_index = room_hours.index(start)
-                end_index = room_hours.index(end)
-                if ((start_index != -1) and (end_index != -1)):
-                    for index in range(start_index, end_index):
-                        room_hours[index] = None
-            except(ValueError):
-                continue
+        if (res_id != ""):
+            cur.execute(f"SELECT start_time, end_time, date FROM reservation WHERE reservation_id = '{res_id}'")
+            booked_times = cur.fetchall()[0]
+            date = booked_times[2].strftime("%Y-%m-%d")
+            if (date == room.date):
+                start = booked_times[0].strftime("%H:%M:%S")
+                end = booked_times[1].strftime("%H:%M:%S")
+                try:
+                    start_index = room_hours.index(start)
+                    end_index = room_hours.index(end)
+                    if ((start_index != -1) and (end_index != -1)):
+                        for index in range(start_index, end_index):
+                            room_hours[index] = None
+                except(ValueError):
+                    continue
 
     db.commitAndClose(cur, conn)
 
