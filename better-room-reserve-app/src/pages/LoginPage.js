@@ -23,8 +23,7 @@ export function LoginPage() {
         }),
       });
       const data = await response.json();
-      console.log(data);
-      console.log(data.detail)
+      console.log(data); 
       
       if(!data.detail){
         localStorage.setItem("token", data.token)

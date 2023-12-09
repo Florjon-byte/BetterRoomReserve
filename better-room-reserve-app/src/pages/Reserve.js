@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import Papa from "papaparse";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../cssfiles/reserve.css";
 import calendar from "../images/calendar.png";
@@ -29,6 +29,8 @@ export function Reserve(){
         return ["00", "30"].map(min => `${hour}:${min} ${ampm}`);
     })
     const generated_button_times = times.slice(0, -2)
+    const [roomhours, setRoomHours] = useState([])
+
 
     // 
     const [selectedSize, setSelectedSize] = useState(5)
@@ -69,12 +71,13 @@ export function Reserve(){
         return new Date(Math.round(date.getTime() / coeff) * coeff).toLocaleTimeString(type, {hour: '2-digit', minute:'2-digit'});
     }
 
+    // make this either current time or if not in currnet time, make it 8 am 
     const [selectedStartTime, setSelectedStartTime] = useState(getCurrentTime("en-GB"))
 
     const generateButtonTimes = (start_time = "8:00 AM") => {
-        const button_times = []
-        const i = times.findIndex((start) => start === start_time)
-        for(let index = i; index < times.length - 2; index++){
+        let button_times = [] 
+        const i = roomhours.findIndex(start => start === start_time)
+        for(let index = i; index < roomhours.length - 1; index++){
             if(index === -1){ break }
             button_times.push(`${times[index]} - ${times[index+1]}`)
         }
@@ -158,6 +161,17 @@ export function Reserve(){
     const changeFloors = () => {
         setFloor(floor => floor === "3" ? "4" : "3");
     }
+
+    const convertTo12Hour = (time) => {
+
+        let [hours, minutes] = time.split(':');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        
+        hours = hours % 12;
+        hours = hours ? hours : 12; // convert 0 to 12
+        
+        return `${hours}:${minutes} ${ampm}`;
+      }
     
     const [listOfRooms, setListOfRooms] = useState([[],[]])
 
@@ -206,6 +220,7 @@ export function Reserve(){
         event.preventDefault()
         if(!localStorage.getItem("token")) { navigate("/login") }
         setRoomId(document.activeElement.id)
+
         try{ 
             const endpoint = "http://localhost:8000/reserve/room-time"
             const response = await fetch(endpoint, {
@@ -216,16 +231,25 @@ export function Reserve(){
                 },
                 body: JSON.stringify({
                     room_id: roomId,
+                    time: selectedStartTime,
+                    date: selectedDate,
+                    building: "Dibner"
                 })
             })
             const data = await response.json();
-            console.log(data)
+            let times = Object.values(data)[0]
+            setRoomHours([])
+            let time12hr = []
+            times.forEach(time => {
+                time12hr.push(convertTo12Hour(time.slice(0,-3)))
+            })
+            setRoomHours(time12hr)
 
         } catch (error) {
             console.log(error)
         }
         setTimeShown(true)
-
+    
     }
 
     return (
@@ -297,14 +321,14 @@ export function Reserve(){
                     <div className='times'>
                         <label>Time Start:</label>
                         <select className='dropdown' onChange={(event) => { 
-                            if(event.target.value.slice(0,-6) !== 12 && event.target.value.slice(-2) === "PM"){ 
+                            if(parseInt(event.target.value.slice(0,-6)) !== 12 && event.target.value.slice(-2) === "PM"){ 
                                 let hour = parseInt(event.target.value.slice(0,-6)) + 12
-                                let mins = event.target.value.slice(-6,-4) 
+                                let mins = event.target.value.slice(-5,-3) 
                                 setSelectedStartTime(`${hour}:${mins}`)
                             } else {
                                 if(event.target.value.slice(0,-6) < 10){
                                     setSelectedStartTime("0" + event.target.value.slice(0,-3))
-                                    console.log("0" + event.target.value.slice(0,-3))
+
                                 }else{
                                     setSelectedStartTime(event.target.value.slice(0,-3))
                                 }
@@ -328,7 +352,6 @@ export function Reserve(){
             {filters && <section className="filteroutput"> 
                 <label> Floor 3 Rooms: </label>
                 <div className='thirdfloor'>
-                    {console.log(listOfRooms)}
                     {listOfRooms[0].map(room => (
                         <button aria-disabled>{room}</button>
                     ))}
@@ -412,7 +435,7 @@ export function Reserve(){
                         </div>}
                     </div>
 
-                    <div className="times"> 
+                    {timesShown && <div className="times"> 
                         <label>Available Times</label>
                         <form onSubmit={handleSubmit}>
                             {generateButtonTimes().map(time => (
@@ -422,7 +445,7 @@ export function Reserve(){
                                 </button>
                             ))}
                         </form>
-                    </div>
+                    </div>}
                 </section>
             </section>
 

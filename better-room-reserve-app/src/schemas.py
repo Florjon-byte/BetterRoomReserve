@@ -11,7 +11,6 @@ class UserModel(BaseModel):
   email: Optional[EmailStr] = None
   auth_token: Optional[str] = None
 
-
 class Filters(BaseModel):
   size: Optional[int] = None
   date: Optional[str] = None
