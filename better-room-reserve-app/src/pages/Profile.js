@@ -119,8 +119,8 @@ export function Profile() {
           <p>E-Mail: {email}</p>
         </div>
         <div className="reservation-info">
-          <h3>Reservations:</h3>
-          <table className="reservations">
+          <h3 className="reservation-header">Your Upcoming Reservations</h3>
+          <table className="reservations-table">
             <tr>
               <th>Date</th>
               <th>Start Time</th>
@@ -178,6 +178,7 @@ async function cancelReservation(reservation_id) {
 function CancelButton({ res_id }) {
   return (
     <button
+      className="coolButton"
       onClick={() => {
         if (
           window.confirm(
