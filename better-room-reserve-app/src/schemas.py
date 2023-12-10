@@ -11,10 +11,6 @@ class UserModel(BaseModel):
   email: Optional[EmailStr] = None
   auth_token: Optional[str] = None
 
-class Room(BaseModel):
-  room_id: str
-  building: str
-
 class Filters(BaseModel):
   size: Optional[int] = None
   date: Optional[str] = None
@@ -30,6 +26,7 @@ class Room(BaseModel):
   room_id: str
   date: Optional[str] = None
   time: Optional[str] = None
+  building: Optional[str] = None
 
 class ReservationInfo(BaseModel):
   res_id: uuid.UUID
