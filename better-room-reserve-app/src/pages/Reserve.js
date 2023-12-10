@@ -74,14 +74,13 @@ export function Reserve(){
     // make this either current time or if not in currnet time, make it 8 am 
     const [selectedStartTime, setSelectedStartTime] = useState(getCurrentTime("en-GB"))
 
-    const generateButtonTimes = (start_time = "8:00 AM") => {
-        let button_times = [] 
-        const i = roomhours.findIndex(start => start === start_time)
-        for(let index = i; index < roomhours.length - 1; index++){
+    const generateButtonTimes = () => {
+        for(let index = 0; index < time12hr.length - 1; index++){
             if(index === -1){ break }
-            button_times.push(`${times[index]} - ${times[index+1]}`)
+            roomhours.push(`${time12hr[index]} - ${time12hr[index+1]}`)
         }
-        return button_times
+
+        return roomhours
     }
 
     const findReservationTime = () => {
@@ -215,11 +214,11 @@ export function Reserve(){
     }
 
     const [roomId, setRoomId] = useState()
+    const [buttonList, setButtonList] = useState([])
 
     const handleAreaClick = async (event) => {
         event.preventDefault()
         if(!localStorage.getItem("token")) { navigate("/login") }
-        setRoomId(document.activeElement.id)
 
         try{ 
             const endpoint = "http://localhost:8000/reserve/room-time"
@@ -230,7 +229,7 @@ export function Reserve(){
                     "Access-Control-Allow-Origin": "*",
                 },
                 body: JSON.stringify({
-                    room_id: roomId,
+                    room_id: document.activeElement.id,
                     time: selectedStartTime,
                     date: selectedDate,
                     building: "Dibner"
@@ -238,18 +237,41 @@ export function Reserve(){
             })
             const data = await response.json();
             let times = Object.values(data)[0]
-            setRoomHours([])
+            console.log("API Times: ", times)
             let time12hr = []
             times.forEach(time => {
                 time12hr.push(convertTo12Hour(time.slice(0,-3)))
             })
-            setRoomHours(time12hr)
+            
+            let list = []
+            for(let index = 0; index < time12hr.length - 1; index++){
+                if(index === -1){ break }
+                list.push(`${time12hr[index]} - ${time12hr[index+1]}`)
+            }
+            console.log("Final Button Times: ", list)
 
+            setRoomHours(list)
+
+            let button_list = roomhours.map(time => (
+                <button onClick={() => {toggle(time)}} 
+                className={selected.includes(time) ? "selected" : "timebuttons"}
+                >{time}
+                </button>
+            ))
+            console.log("Button List", button_list)
+
+            // inserting the buttons into html
+            // document.getElementById("time_form").innerHTML = button_list
+
+            // button_list.forEach(button => {
+            //     document.getElementById("time_form").appendChild(button); 
+            // })
+            
+            
         } catch (error) {
             console.log(error)
         }
         setTimeShown(true)
-    
     }
 
     return (
@@ -299,18 +321,6 @@ export function Reserve(){
                             ))}
                         </select>
                     </div>
-                    {/* Noise is being deprecated */}
-                    {/* <div className='noise'>
-                        <label>Noise Level:</label>
-                        <select className='dropdown'> 
-                        <option selected=""></option>
-                            {noise.map(option => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    </div> */}
                     <div className="dates">
                         <label>Date:</label>
                         <input className='dropdown' type='date' min={getCurrentDate()}
@@ -437,8 +447,9 @@ export function Reserve(){
 
                     {timesShown && <div className="times"> 
                         <label>Available Times</label>
-                        <form onSubmit={handleSubmit}>
-                            {generateButtonTimes().map(time => (
+                        <form id='time_form' onSubmit={handleSubmit}>
+                            {console.log(roomhours)}
+                            {roomhours.map(time => (
                                 <button onClick={() => {toggle(time)}} 
                                 className={selected.includes(time) ? "selected" : "timebuttons"}
                                 >{time}
