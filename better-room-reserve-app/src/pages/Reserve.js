@@ -132,13 +132,23 @@ export function Reserve(){
             }
         }
 
+
         if ( selected.length === 0){
-            console.log("EMPTY RESERVATION")
+            throw alert("EMPTY RESERVATION")
         } else if(!consecutive){ // if false 
-            console.log("ERROR", selected)
+            throw alert("ERROR: NON CONSECUTIVES")
         } else if (consecutive){ 
             console.log("GOOD", selected)
-        } 
+
+            const temphr = test_times[0][0] < 10 ? "0" : ""
+            const tempmin = test_times[0][1] === 0 ? "0" : ""
+            const tempehr = test_times[test_times.length - 1][0] < 10 ? "0" : ""
+            const tempemin = test_times[test_times.length - 1][1] === 0 ? "0" : ""
+
+            return [`${temphr}` + `${test_times[0][0]}:${test_times[0][1]}` + `${tempmin}`, `${tempehr}` + `${test_times[test_times.length - 1][0]}:${test_times[test_times.length - 1][1]}` + `${tempemin}`]
+        }  
+
+
     }
 
     const [floor, setFloor] = useState("3") // for changing floor levels and maps
@@ -219,6 +229,7 @@ export function Reserve(){
     const handleAreaClick = async (event) => {
         event.preventDefault()
         if(!localStorage.getItem("token")) { navigate("/login") }
+        setRoomId(document.activeElement.id)
 
         try{ 
             const endpoint = "http://localhost:8000/reserve/room-time"
@@ -297,7 +308,7 @@ export function Reserve(){
         setShowInfo(false)
     }
     
-    // date, roomid, times 
+    // date, roomid, [starttimes, endtime],  
     const handleReserve = async (event) => {
         event.preventDefault()
         try{
@@ -309,9 +320,21 @@ export function Reserve(){
                     "Access-Control-Allow-Origin": "*",
                 },
                 body: JSON.stringify({
-                    room_id: id,
+                    date: selectedDate,
+                    room_id: roomId,
+                    time: findReservationTime(),
+                    email: localStorage.getItem("email")
                 })
             })
+            let data = await response.json()
+            console.log(data)
+            setTimeShown(false)
+            setShowInfo(false)
+            if(data.reservation_id){
+                alert("Reservation Made.")
+            }else{
+                alert("Error. Room Occupied at this time.")
+            }
         } catch (error) {
             console.log(error)
         }
@@ -356,6 +379,7 @@ export function Reserve(){
                         <select className='dropdown' onChange={(event) =>{
                             setSelectedSize(parseInt(event.target.value[event.target.value.length - 2]))
                             setTimeShown(false)
+                            setShowInfo(false)
                         }}>
                         <option selected=""></option>
                             {size.map(option => (
@@ -371,6 +395,7 @@ export function Reserve(){
                         max={getTwoMonthsAfter()} onChange={(event) => {
                             setSelectedDate(event.target.value)
                             setTimeShown(false)
+                            setShowInfo(false)
                         }}/>
                     </div>
                     <div className='times'>
@@ -389,6 +414,7 @@ export function Reserve(){
                                 }
                             }
                             setTimeShown(false)
+                            setShowInfo(false)
 
                         }}>
                             <option selected=""></option>
@@ -439,7 +465,7 @@ export function Reserve(){
                             <img className='thirdFloorMap' src={third} width="750" height="530"
                             usemap="#thirdFloor"/>
                             <map name="thirdFloor">
-                                <area shape="rect" coords="317,277,354,315" id='LC323' href="" onClick={(event) => {handleAreaClick(event)
+                                <area shape="rect"coords="317,277,354,315" id='LC323' href="" onClick={(event) => {handleAreaClick(event)
                                 handleMouseOver(event, "LC323")}}/>
                                 <area shape="rect" coords="316,315,353,353" id='LC326' href="" onClick={(event) => {handleAreaClick(event)
                                 handleMouseOver(event, "LC326")}}/>
@@ -477,7 +503,7 @@ export function Reserve(){
                             <img className='forth' src={forth} width="750" height="560" 
                             usemap="#forthFloor"></img>
                             <map name="forthFloor">
-                                <area shape="rect" coords="229,13,292,49" id='LC445' href="" onClick={(event) => {handleAreaClick(event)
+                                <area shape="rect" coords="229,13,292,49" id='LC445' href="" onClick={(event) => {handleAreaClick(event) 
                                 handleMouseOver(event, "LC445")}}/>
                                 <area shape="rect" coords="230,53,292,86" id='LC445A'  href="" onClick={(event) => {handleAreaClick(event)
                                 handleMouseOver(event, "LC445A")}}/>
@@ -558,7 +584,9 @@ export function Reserve(){
                 </section>
 
                 <section>
-                    <button className='coolButton' onClick={() => {findReservationTime()}}>Reserve</button>
+                    <form onSubmit={handleReserve}> 
+                        <button className='coolButton' onClick={() => {findReservationTime()}}>Reserve</button>
+                    </form>
                 </section>
             </section>}
 

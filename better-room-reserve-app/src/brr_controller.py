@@ -54,7 +54,7 @@ async def login(login_info: schemas.LogIn):
             """
     cur.execute(query,(jwtoken, login_info.email))
     db.commitAndClose(cur, conn)
-    return { 'token': jwtoken }
+    return { 'token': jwtoken, 'email': login_info.email }
 
 @app.get("/logout")
 async def logout(user: schemas.UserModel):
@@ -209,7 +209,7 @@ async def get_room_info(room: schemas.Room):
         room_info = db.getRoomByID(cur, room.room_id)[0]
         db.commitAndClose(cur, conn)
 
-        reservations = room_info[7].replace('{','').replace('}','').split(',')
+        reservations = room_info[7] if isinstance(room_info[7], list) else room_info[7].replace('{','').replace('}','').split(',')
         room_info_json = {
                             "room_id": room_info[0],
                             "size": room_info[1],

@@ -27,6 +27,7 @@ export function LoginPage() {
       
       if(!data.detail){
         localStorage.setItem("token", data.token)
+        localStorage.setItem("email", data.email)
         navigate("/")
       }else{
         console.log("User does not exist. Please try again.")
