@@ -116,7 +116,7 @@ export function Profile() {
             width="200px"
           ></img>
           <h3>Hello, {name}</h3>
-          <p>E-Mail: {email}</p>
+          <p>Email: {email}</p>
         </div>
         <div className="reservation-info">
           <h3 className="reservation-header">Your Upcoming Reservations</h3>
@@ -125,7 +125,9 @@ export function Profile() {
               <th>Date</th>
               <th>Start Time</th>
               <th>End Time</th>
+              <th>Building</th>
               <th>Room</th>
+              <th>Floor</th>
               <th>Cancel?</th>
             </tr>
             {reservation.map((info) => (
@@ -136,7 +138,9 @@ export function Profile() {
                 <td>{info.building}</td>
                 <td>{info.room_id}</td>
                 <td>{info.floor}</td>
-                <CancelButton res_id={info.res_id}></CancelButton>
+                <td>
+                  <CancelButton res_id={info.res_id}></CancelButton>
+                </td>
               </tr>
             ))}
           </table>
@@ -189,7 +193,7 @@ function CancelButton({ res_id }) {
         }
       }}
     >
-      Cancel Reservation
+      Cancel
     </button>
   );
 }
