@@ -54,10 +54,10 @@ reservation_insert_statements = [
         str(uuid.uuid4()), "2024/01/04", "10:00", "12:00", 'LC416', 'fh999@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), "2023/12/05", "10:00", "12:00", 'LC417', 'dg3314@nyu.edu'
+        str(uuid.uuid4()), "2024/01/05", "10:00", "12:00", 'LC417', 'dg3314@nyu.edu'
     ),
     (
-        str(uuid.uuid4()), "2023/12/05", "10:00", "12:00", 'LC416', 'fh999@nyu.edu'
+        str(uuid.uuid4()), "2024/01/05", "10:00", "12:00", 'LC416', 'fh999@nyu.edu'
     )
 ]
 

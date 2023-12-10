@@ -69,16 +69,20 @@ async def get_reservation(request: schemas.UserModel):
     cur, conn = db.openCursor()
     result = db.getReservationByUserEmail(cur, request.email)
 
-    response = {}
-    for res_id in result:
+    response = []
+    for i, res_id in enumerate(result):
+        i+=1
         reservation = db.getReservationByID(cur, res_id)
 
-        response[reservation[0][0]] = {
-                    "date" : reservation[0][1],
-                    "start_time" : reservation[0][2],
-                    "end_time" : reservation[0][3],
-                    "room_id" : reservation[0][4],
-                    }
+        response.append({
+                    "room_id" : reservation[0][0],
+                    "res_id": reservation[0][1],
+                    "date" : reservation[0][2],
+                    "start_time" : reservation[0][3],
+                    "end_time" : reservation[0][4],
+                    "building" : reservation[0][7],
+                    "floor" : reservation[0][8]
+                    })
    
     db.commitAndClose(cur, conn)
 
@@ -96,11 +100,11 @@ async def cancel_reservation(res_info: schemas.ReservationInfo):
         return {"Error" : f"Reservation with id {reservation_id} does not exist"}
 
     res_info = {
-                "reservation_id" : result[0][0],
-                "date" : result[0][1],
-                "start_time" : result[0][2],
-                "end_time" : result[0][3],
-                "room_id" : result[0][4],
+                "room_id" : result[0][0],
+                "reservation_id" : result[0][1],
+                "date" : result[0][2],
+                "start_time" : result[0][3],
+                "end_time" : result[0][4],
                 "email" : result[0][5]
                 }
 
@@ -136,7 +140,7 @@ async def get_user_by_token(user: schemas.UserModel):
     cur, conn = db.openCursor()
     response = db.getUserByToken(cur, user.auth_token)
     db.commitAndClose(cur, conn)
-    reservations = response[0][6].replace('{','').replace('}','').split(',')
+    reservations = response[0][6] if isinstance(response[0][6], list) else response[0][6].replace('{','').replace('}','').split(',')
     response_json = {
                         "net_id": response[0][0],
                         "email": response[0][1],
