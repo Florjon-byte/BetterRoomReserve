@@ -259,19 +259,62 @@ export function Reserve(){
                 </button>
             ))
             console.log("Button List", button_list)
-
-            // inserting the buttons into html
-            // document.getElementById("time_form").innerHTML = button_list
-
-            // button_list.forEach(button => {
-            //     document.getElementById("time_form").appendChild(button); 
-            // })
-            
             
         } catch (error) {
             console.log(error)
         }
         setTimeShown(true)
+    }
+
+    const [roomInfo, setRoomInfo] = useState([])
+    const [showInfo, setShowInfo] = useState(false)
+
+    const handleMouseOver = async (event, id) => {
+        event.preventDefault()
+        try{
+            const endpoint = "http://localhost:8000/reserve/room-info"
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify({
+                    room_id: id,
+                })
+            })
+            let data = await response.json()
+            setRoomInfo(
+               ["Whiteboard: " + `${data.whiteboard}`, "Monitor: " + `${data.monitor}\n`, "Outlets: " + `${data.outlets}\n`]
+            )
+            setShowInfo(true)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleMouseOut = () => {
+        setShowInfo(false)
+    }
+    
+    // date, roomid, times 
+    const handleReserve = async (event) => {
+        event.preventDefault()
+        try{
+            const endpoint = "http://localhost:8000/reserve"
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify({
+                    room_id: id,
+                })
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -312,6 +355,7 @@ export function Reserve(){
                         <label>Size:</label>
                         <select className='dropdown' onChange={(event) =>{
                             setSelectedSize(parseInt(event.target.value[event.target.value.length - 2]))
+                            setTimeShown(false)
                         }}>
                         <option selected=""></option>
                             {size.map(option => (
@@ -326,6 +370,7 @@ export function Reserve(){
                         <input className='dropdown' type='date' min={getCurrentDate()}
                         max={getTwoMonthsAfter()} onChange={(event) => {
                             setSelectedDate(event.target.value)
+                            setTimeShown(false)
                         }}/>
                     </div>
                     <div className='times'>
@@ -343,6 +388,8 @@ export function Reserve(){
                                     setSelectedStartTime(event.target.value.slice(0,-3))
                                 }
                             }
+                            setTimeShown(false)
+
                         }}>
                             <option selected=""></option>
                             {generated_button_times.map(option => (
@@ -387,26 +434,41 @@ export function Reserve(){
                     </div>
                     <div className='floormap'>
                         <label> Floor: {floor}</label>
-                        {floor === "3" &&
+                        {floor === "3" && 
                         <div className='thirdfloor'> 
                             <img className='thirdFloorMap' src={third} width="750" height="530"
                             usemap="#thirdFloor"/>
                             <map name="thirdFloor">
-                                <area shape="rect" coords="317,277,354,315" id='LC323' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="316,315,353,353" id='LC326' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="355,315,391,355" id='LC325' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="355,276,391,314" id='LC324' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="619,212,651,245" id='LC331' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="551,210,583,245" id='LC327' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="585,211,617,246" id='LC330' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="550,277,583,312" id='LC328' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="585,277,617,312" id='LC329' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="617,277,648,311" id='LC332' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="550,315,583,349" id='LC335' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="586,315,615,349" id='LC334' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="618,315,649,358" id='LC333' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="213,377,249,416" id='LC340' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="252,378,288,416" id='LC339' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="317,277,354,315" id='LC323' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC323")}}/>
+                                <area shape="rect" coords="316,315,353,353" id='LC326' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC326")}}/>
+                                <area shape="rect" coords="355,315,391,355" id='LC325' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC325")}}/>
+                                <area shape="rect" coords="355,276,391,314" id='LC324' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC324")}}/>
+                                <area shape="rect" coords="619,212,651,245" id='LC331' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC331")}}/>
+                                <area shape="rect" coords="551,210,583,245" id='LC327' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC327")}}/>
+                                <area shape="rect" coords="585,211,617,246" id='LC330' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC330")}}/>
+                                <area shape="rect" coords="550,277,583,312" id='LC328' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC328")}}/>
+                                <area shape="rect" coords="585,277,617,312" id='LC329' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC329")}}/>
+                                <area shape="rect" coords="617,277,648,311" id='LC332' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC332")}}/>
+                                <area shape="rect" coords="550,315,583,349" id='LC335' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC335")}}/>
+                                <area shape="rect" coords="586,315,615,349" id='LC334' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC334")}}/>
+                                <area shape="rect" coords="618,315,649,358" id='LC333' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC333")}}/>
+                                <area shape="rect" coords="213,377,249,416" id='LC340' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC340")}}/>
+                                <area shape="rect" coords="252,378,288,416" id='LC339' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC339")}}/>
                             </map>
                         </div>}
 
@@ -415,32 +477,58 @@ export function Reserve(){
                             <img className='forth' src={forth} width="750" height="560" 
                             usemap="#forthFloor"></img>
                             <map name="forthFloor">
-                                <area shape="rect" coords="229,13,292,49" id='LC445' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="230,53,292,86" id='LC445A'  href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="230,88,293,122" id="LC445B"  href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="229,126,292,176" id='LC445C' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="347,306,367,325" id='LC416' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="369,305,387,323" id='LC417' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="390,307,407,324" id='LC418' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="348,328,366,345" id='LC430' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="369,329,387,345" id='LC437' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="390,328,407,345" id='LC435' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="348,348,367,364" id='LC438' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="389,348,407,364" id='LC436' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="444,329,480,363" id='LC434' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="483,331,519,363" id='LC432' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="552,307,570,324" id='LC419' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="573,307,592,324" id='LC420' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="593,307,611,324" id='LC421' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="614,306,631,324" id='LC422' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="634,306,653,323" id='LC423' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="552,327,570,344" id='LC431' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="574,328,589,343" id='LC429' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="595,327,610,342" id='LC428' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="615,328,631,344" id='LC427' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="634,327,653,344" id='LC425' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="553,348,570,366" id='LC430' href="" onClick={(event) => {handleAreaClick(event)}}/>
-                                <area shape="rect" coords="634,348,652,364" id='LC426' href="" onClick={(event) => {handleAreaClick(event)}}/>
+                                <area shape="rect" coords="229,13,292,49" id='LC445' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC445")}}/>
+                                <area shape="rect" coords="230,53,292,86" id='LC445A'  href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC445A")}}/>
+                                <area shape="rect" coords="230,88,293,122" id="LC445B"  href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC445B")}}/>
+                                <area shape="rect" coords="229,126,292,176" id='LC445C' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC445C")}}/>
+                                <area shape="rect" coords="347,306,367,325" id='LC416' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC416")}}/>
+                                <area shape="rect" coords="369,305,387,323" id='LC417' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC417")}}/>
+                                <area shape="rect" coords="390,307,407,324" id='LC418' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC418")}}/>
+                                <area shape="rect" coords="348,328,366,345" id='LC430' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC430")}}/>
+                                <area shape="rect" coords="369,329,387,345" id='LC437' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC437")}}/>
+                                <area shape="rect" coords="390,328,407,345" id='LC435' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC435")}}/>
+                                <area shape="rect" coords="348,348,367,364" id='LC438' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC438")}}/>
+                                <area shape="rect" coords="389,348,407,364" id='LC436' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC436")}}/>
+                                <area shape="rect" coords="444,329,480,363" id='LC434' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC434")}}/>
+                                <area shape="rect" coords="483,331,519,363" id='LC432' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC432")}}/>
+                                <area shape="rect" coords="552,307,570,324" id='LC419' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC419")}}/>
+                                <area shape="rect" coords="573,307,592,324" id='LC420' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC420")}}/>
+                                <area shape="rect" coords="593,307,611,324" id='LC421' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC421")}}/>
+                                <area shape="rect" coords="614,306,631,324" id='LC422' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC422")}}/>
+                                <area shape="rect" coords="634,306,653,323" id='LC423' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC423")}}/>
+                                <area shape="rect" coords="552,327,570,344" id='LC431' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC431")}}/>
+                                <area shape="rect" coords="574,328,589,343" id='LC429' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC429")}}/>
+                                <area shape="rect" coords="595,327,610,342" id='LC428' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC428")}}/>
+                                <area shape="rect" coords="615,328,631,344" id='LC427' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC427")}}/>
+                                <area shape="rect" coords="634,327,653,344" id='LC425' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC425")}}/>
+                                <area shape="rect" coords="553,348,570,366" id='LC430' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC430")}}/>
+                                <area shape="rect" coords="634,348,652,364" id='LC426' href="" onClick={(event) => {handleAreaClick(event)
+                                handleMouseOver(event, "LC426")}}/>
                             </map>
                         </div>}
                     </div>
@@ -448,7 +536,6 @@ export function Reserve(){
                     {timesShown && <div className="times"> 
                         <label>Available Times</label>
                         <form id='time_form' onSubmit={handleSubmit}>
-                            {console.log(roomhours)}
                             {roomhours.map(time => (
                                 <button onClick={() => {toggle(time)}} 
                                 className={selected.includes(time) ? "selected" : "timebuttons"}
@@ -460,9 +547,20 @@ export function Reserve(){
                 </section>
             </section>
 
-            <section className='times_selected'>
-                <button className='coolButton' onClick={() => {findReservationTime()}}>Reserve</button>
-            </section>
+            {showInfo && <section className='lastsection'>
+                <section className="roomInfo">
+                    <span className='roomInfoSection'>
+                        <b>Room Information: </b>
+                        <span>{roomInfo[0]}</span> 
+                        <span>{roomInfo[1]}</span>
+                        <span>{roomInfo[2]}</span>
+                    </span> 
+                </section>
+
+                <section>
+                    <button className='coolButton' onClick={() => {findReservationTime()}}>Reserve</button>
+                </section>
+            </section>}
 
             {/* Footer */}
             <footer className="bg-dark text-center text-white"> 
