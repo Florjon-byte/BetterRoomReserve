@@ -15,6 +15,13 @@ export function Home(){
     navigate("/")
   }
 
+  const handleProfileClick = () => {
+    if(!localStorage.getItem("token")){
+      navigate("/login")
+    }
+  
+  }
+
   return(
       <div>
       {/* Navbar */}
@@ -30,7 +37,7 @@ export function Home(){
                 <a class="nav-link" href="/reserve">Reserve</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/profile">Profile</a>
+                <a class="nav-link" href={localStorage.getItem("token") ? "/profile" : "/login"}>Profile</a>
               </li>
             </ul>
           </div>

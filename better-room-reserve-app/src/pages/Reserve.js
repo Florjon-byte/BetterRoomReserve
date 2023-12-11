@@ -1,9 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import Papa from "papaparse";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../cssfiles/reserve.css";
-import calendar from "../images/calendar.png";
 import forth from "../images/forthfloor.png";
 import third from "../images/thirdfloor.png";
 
@@ -355,7 +353,7 @@ export function Reserve(){
                         <a class="nav-link" href="/reserve">Reserve</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/profile">Profile</a>
+                        <a class="nav-link" href={localStorage.getItem("token") ? "/profile" : "/login"}>Profile</a>
                     </li>
                     </ul>
                 </div>
@@ -576,7 +574,7 @@ export function Reserve(){
             {showInfo && <section className='lastsection'>
                 <section className="roomInfo">
                     <span className='roomInfoSection'>
-                        <b>Room Information: </b>
+                        <b>Room Information: {roomId} </b>
                         <span>{roomInfo[0]}</span> 
                         <span>{roomInfo[1]}</span>
                         <span>{roomInfo[2]}</span>

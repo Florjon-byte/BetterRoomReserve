@@ -237,7 +237,7 @@ async def get_time_info(room: schemas.Room):
     for index in range(0, remove_end):
         room_hours[index] = None
 
-    reservations = room_info[7].replace('{','').replace('}','').split(',')
+    reservations = room_info[7] if isinstance(room_info[7], list) else room_info[7].replace('{','').replace('}','').split(',')
     for res_id in reservations:
         if (res_id != ""):
             cur.execute(f"SELECT start_time, end_time, date FROM reservation WHERE reservation_id = '{res_id}'")
