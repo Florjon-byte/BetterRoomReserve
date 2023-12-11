@@ -182,7 +182,7 @@ async function cancelReservation(reservation_id) {
 function CancelButton({ res_id }) {
   return (
     <button
-      className="coolButton"
+      className="cancelButton"
       onClick={() => {
         if (
           window.confirm(

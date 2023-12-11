@@ -9,8 +9,8 @@ from dbMethods import *
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Test user_data
-createUser("dg3314","dg3314@nyu.edu",pwd_context.hash("notAPassword"))
-createUser("fh999", "fh999@nyu.edu",pwd_context.hash("definitelyNotAPassword"))
+createUser("dg3314","dg3314@nyu.edu",pwd_context.hash("1234"))
+createUser("fh999", "fh999@nyu.edu",pwd_context.hash("4321"))
 
 # Test rooms
 with open("Rooms.csv") as file:
