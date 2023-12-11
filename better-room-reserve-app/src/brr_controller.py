@@ -172,7 +172,7 @@ async def get_filtered_info(filters: schemas.Filters):
     if (filters.date):
         for item in room_result:
             room_info = db.getRoomByID(cur, item[0])[0]
-            reservations = room_info[7].replace('{','').replace('}','').split(',')
+            reservations = room_info[7] if isinstance(room_info[7],list) else room_info[7].replace('{','').replace('}','').split(',') 
             hours = generate_operational_hours()
             if ((reservations[0] != '') and (len(reservations) != 1)):
                 for res_id in reservations:
