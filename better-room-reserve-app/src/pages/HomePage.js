@@ -101,10 +101,27 @@ export function Home(){
       {/* Better Room Reserve stuff  */}
       <div className='instruction'> 
         <div className=''>
-        <h1 className='header'> Instructions </h1>
-        <p>
-          Amidst the tranquil rustling of leaves in the ancient forest, a solitary fox ventured cautiously along a winding woodland path. The dappled sunlight filtered through the dense canopy, casting intricate patterns of light and shadow upon the moss-covered ground. With a delicate grace, the fox paused, its keen senses alert to the forest's secrets. Nature's symphony played on, as birdsong blended with the distant babbling of a hidden brook, creating a mesmerizing, harmonious tapestry of sounds. In this enchanted realm, time seemed to stand still, and the fox, a silent sentinel, moved with the rhythm of the woods, a fleeting embodiment of the wild's enduring beauty.
-        </p>
+          <h1 className='header'> Instructions </h1>
+          <p>
+            Welcome to BetterRoomReserve, we welcome you to a cleaner UI that NYU doesnt pay anyone to update 
+          </p>
+          <ul className='list'>
+            <li>
+              Look around and enjoy the great UI that was developed by TWO people 
+            </li>
+            <li>
+              Go to reserve page and use the filter to view what rooms are available for your criteria (Note: you must be logged in)
+            </li>
+            <li>
+              Click on times to which you want to reserve your room, they must be consecutive times, and get some room information in the meantime
+            </li>
+            <li>
+              Click Reserve and thats it!
+            </li>
+            <li>
+              If you wish to view or cancel a reservation, go over to the profile page and press cancel to drop your reservation
+            </li>
+          </ul>
         </div> 
         <div>
           <iframe width="500" height="300" src="https://www.youtube.com/embed/EE-xtCF3T94" title="Who&#39;s That Pokemon?" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
